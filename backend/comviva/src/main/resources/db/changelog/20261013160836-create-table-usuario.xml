@@ -9,7 +9,7 @@
     <changeSet id="20261013160836" author="zamba-cl">
         <createTable tableName="usuario">
             <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" unique="true"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="nome" type="varchar(255)">
                 <constraints nullable="false"/>
@@ -18,7 +18,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="email" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="senha" type="varchar(255)">
                 <constraints nullable="false"/>
