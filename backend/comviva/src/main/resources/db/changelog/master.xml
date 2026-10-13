@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="db/changelog/20261013160836-create-table-usuario.xml"/>
+    <include file="db/changelog/20261013164508-create-table-categoria.xml"/>
+    <include file="db/changelog/20261013164747-create-table-subcategoria.xml"/>
+    <include file="db/changelog/20261013161442-create-table-evento.xml"/>
+    <include file="db/changelog/20261013165252-create-table-usuario_evento.xml"/>
+    <include file="db/changelog/20261013165708-create-table-avaliacao_evento.xml"/>
+    <include file="db/changelog/20261013165854-create-table-interesse_usuario.xml"/>
+
+</databaseChangeLog>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+
+    <changeSet id="20261013165708" author="zamba-cl">
+        <createTable tableName="avaliacao_evento">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="avaliacao" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="usuario_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="evento_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>            
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="avaliacao_evento"
+            baseColumnNames="usuario_id"
+            constraintName="fk_avaliacao_evento_usuario"
+            referencedTableName="usuario"
+            referencedColumnNames="id"
+        />
+
+        <addForeignKeyConstraint
+            baseTableName="avaliacao_evento"
+            baseColumnNames="evento_id"
+            constraintName="fk_avaliacao_evento_evento"
+            referencedTableName="evento"
+            referencedColumnNames="id"
+        />
+    </changeSet>
+
+</databaseChangeLog>

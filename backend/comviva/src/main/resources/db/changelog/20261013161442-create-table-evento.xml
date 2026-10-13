@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+
+    <changeSet id="20261013161442" author="zamba-cl">
+        <createTable tableName="evento">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="nome" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="descricao" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="data_hora" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="capacidade_min" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="capacidade_max" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="endereco" type="varchar(500)">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(15)">
+                <constraints nullable="false" />
+            </column>
+            <column name="nivel" type="varchar(15)">
+                <constraints nullable="false" />
+            </column>
+            <column name="categoria_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="subcategoria_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="criador_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="evento"
+            baseColumnNames="categoria_id"
+            constraintName="fk_evento_categoria"
+            referencedTableName="categoria"
+            referencedColumnNames="id"
+        />
+
+        <addForeignKeyConstraint
+            baseTableName="evento"
+            baseColumnNames="subcategoria_id"
+            constraintName="fk_evento_subcategoria"
+            referencedTableName="subcategoria"
+            referencedColumnNames="id"
+        />
+
+        <addForeignKeyConstraint
+            baseTableName="evento"
+            baseColumnNames="criador_id"
+            constraintName="fk_evento_criador"
+            referencedTableName="usuario"
+            referencedColumnNames="id"
+        />
+    </changeSet>
+
+</databaseChangeLog>
