@@ -23,8 +23,11 @@
             <column name="senha" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="foto" type="varchar(255)">
+            <column name="foto" type="oid">
                 <constraints nullable="true"/>
+            </column>
+            <column name="ativo" type="boolean">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
