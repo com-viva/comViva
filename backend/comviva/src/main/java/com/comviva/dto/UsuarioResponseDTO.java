@@ -5,5 +5,6 @@ public record UsuarioResponseDTO (
     String nome, 
     String telefone, 
     String email, 
-    String foto
+    String foto,
+    Boolean ativo
 ) {}
