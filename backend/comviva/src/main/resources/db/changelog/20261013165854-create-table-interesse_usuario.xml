@@ -21,6 +21,30 @@
                 <constraints nullable="true"/>
             </column>
         </createTable>
+        
+        <addForeignKeyConstraint
+            baseTableName="interesse_usuario"
+            baseColumnNames="usuario_id"
+            constraintName="fk_interesse_usuario_usuario"
+            referencedTableName="usuario"
+            referencedColumnNames="id"
+        />
+
+        <addForeignKeyConstraint
+            baseTableName="interesse_usuario"
+            baseColumnNames="categoria_id"
+            constraintName="fk_interesse_usuario_categoria"
+            referencedTableName="categoria"
+            referencedColumnNames="id"
+        />
+
+        <addForeignKeyConstraint
+            baseTableName="interesse_usuario"
+            baseColumnNames="subcategoria_id"
+            constraintName="fk_interesse_usuario_subcategoria"
+            referencedTableName="subcategoria"
+            referencedColumnNames="id"
+        />
     </changeSet>
 
 </databaseChangeLog>
