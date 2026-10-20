@@ -17,8 +17,8 @@ public class Categoria {
     @Column
     private String nome;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "subcategoria" , "evento" }, allowSetters = true) 
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "categoria", "subcategoria", "usuario" }, allowSetters = true) 
     private Set<Evento> eventos = new HashSet<>();
 
     public Long getId() {

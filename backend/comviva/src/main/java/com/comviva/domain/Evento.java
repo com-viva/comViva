@@ -1,6 +1,6 @@
 package com.comviva.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import com.comviva.enums.NivelEvento;
 import com.comviva.enums.StatusEvento;
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ public class Evento {
     private String descricao;
 
     @Column(name = "data_hora")
-    private LocalDate dataHora;
+    private LocalDateTime dataHora;
 
     @Column(name = "capacidade_min")
     private Long capacidadeMin;
@@ -32,9 +32,11 @@ public class Evento {
     @Column
     private String endereco;
 
+    @Enumerated(EnumType.STRING) 
     @Column
     private StatusEvento status;
 
+    @Enumerated(EnumType.STRING) 
     @Column
     private NivelEvento nivel;
 
@@ -74,11 +76,11 @@ public class Evento {
         this.descricao = descricao;
     }
 
-    public LocalDate getDataHora() {
+    public LocalDateTime getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(LocalDate dataHora) {
+    public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
 
