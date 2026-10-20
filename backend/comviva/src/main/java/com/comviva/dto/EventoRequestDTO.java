@@ -33,9 +33,6 @@ public record EventoRequestDTO(
     @NotBlank(message = "O endereço é obrigatório", groups = Criar.class)
     String endereco,
 
-    @NotNull(message = "O status é obrigatório", groups = Criar.class)
-    StatusEvento status,
-
     @NotNull(message = "O nível é obrigatório", groups = Criar.class)
     NivelEvento nivel,
 
