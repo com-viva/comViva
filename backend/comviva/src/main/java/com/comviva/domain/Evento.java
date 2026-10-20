@@ -23,6 +23,9 @@ public class Evento {
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
 
+    @Column(name = "data_hora_fim")
+    private LocalDateTime dataHoraFim;
+
     @Column(name = "capacidade_min")
     private Long capacidadeMin;
 
@@ -84,6 +87,13 @@ public class Evento {
         this.dataHora = dataHora;
     }
 
+    public LocalDateTime getDataHoraFim() {
+        return dataHoraFim;
+    }
+
+    public void setDataHoraFim(LocalDateTime dataHoraFim) {
+        this.dataHoraFim = dataHoraFim;
+    }      
     public Long getCapacidadeMin() {
         return capacidadeMin;
     }

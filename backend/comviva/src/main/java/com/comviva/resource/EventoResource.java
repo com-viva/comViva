@@ -16,24 +16,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/eventos")
 public class EventoResource {
 
     private final EventoService eventoService;
-    
 
     public EventoResource(EventoService eventoService) {
         this.eventoService = eventoService;
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Evento>> getEventos(@RequestParam(required = false) String nome) {
-        if (nome != null) {
-            return ResponseEntity.ok(eventoService.findEventoByName(nome));
-        }
-        return ResponseEntity.ok(eventoService.findAllEventos());
+    public ResponseEntity<List<Evento>> getEventos(@RequestParam(required = false) String nome, @RequestParam(required = false) Long categoriaId, @RequestParam(required = false) Long subcategoriaId) {
+        Long usuarioId = 1L; //VALOR TEMPORÁRIO ENQUANTO CAMADA DE SEGURANÇA NÃO ESTÁ IMPLEMENTADA
+        return ResponseEntity.ok(eventoService.findEventos(usuarioId, nome, categoriaId, subcategoriaId));
     }
 
     @GetMapping("/{id}")
@@ -42,17 +38,29 @@ public class EventoResource {
         return ResponseEntity.ok(evento);
     }
 
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<List<Evento>> getEventosByUsuario(@PathVariable Long id) {
+        List<Evento> eventos = eventoService.findEventosByUsuario(id);
+        return ResponseEntity.ok(eventos);
+    }
+
     @PostMapping("")
     public ResponseEntity<Void> saveEvento(@Valid @RequestBody EventoRequestDTO eventoRequestDTO) {
         eventoService.createEvento(eventoRequestDTO);
         return ResponseEntity.noContent().build();
-    } 
+    }
 
-    @PatchMapping("/{id}") 
+    @PatchMapping("/{id}")
     public ResponseEntity<Void> updateEvento(@PathVariable Long id, @RequestBody EventoRequestDTO eventoRequestDTO) {
         eventoService.updateEvento(id, eventoRequestDTO);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/conclude") 
+    public ResponseEntity<Void> concludeEvento(@PathVariable Long id) {
+        eventoService.concludeEvento(id);
+        return ResponseEntity.noContent().build();
+    } 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvento(@PathVariable Long id) {
