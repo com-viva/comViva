@@ -52,7 +52,7 @@ public class Evento {
     private Subcategoria subcategoria;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "criador_id")
     private Usuario usuario;
 
     public Long getId() {
