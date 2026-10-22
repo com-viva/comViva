@@ -15,10 +15,12 @@ public interface EventoMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dataHoraFim", ignore = true)
+    @Mapping(target = "usuario", ignore = true)
     Evento toEntity(EventoRequestDTO eventoDTO);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dataHoraFim", ignore = true)
+    @Mapping(target = "usuario", ignore = true)
     void updateEventoFromDto(EventoRequestDTO dto, @MappingTarget Evento evento);
 }
