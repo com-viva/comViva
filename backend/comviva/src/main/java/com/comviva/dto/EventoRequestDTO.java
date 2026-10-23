@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 
 import com.comviva.domain.Categoria;
 import com.comviva.domain.Subcategoria;
-import com.comviva.domain.Usuario;
 import com.comviva.enums.NivelEvento;
-import com.comviva.enums.StatusEvento;
-
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -39,8 +36,5 @@ public record EventoRequestDTO(
     @NotNull(message = "A categoria é obrigatória", groups = Criar.class)
     Categoria categoria,
 
-    Subcategoria subcategoria,
-
-    @NotNull(message = "O usuário é obrigatório", groups = Criar.class)
-    Usuario usuario
+    Subcategoria subcategoria
 ) {}

@@ -76,7 +76,7 @@ public class UsuarioService {
         }
     }
 
-    private Usuario findUsuarioOrElseThrow(Long id) {
+    public Usuario findUsuarioOrElseThrow(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }

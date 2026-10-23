@@ -6,6 +6,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -58,10 +60,32 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleConflictException(ConflictException ex) {
         Map<String, Object> errorDetails = new HashMap<>();
         errorDetails.put("timestamp", java.time.Instant.now());
-        errorDetails.put("status", HttpStatus.CONFLICT.value());                                                                            
+        errorDetails.put("status", HttpStatus.CONFLICT.value());
         errorDetails.put("error", "Regra de Negócio Violada");
         errorDetails.put("message", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDetails);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", java.time.Instant.now());
+        errorDetails.put("status", HttpStatus.UNAUTHORIZED.value());
+        errorDetails.put("error", "Falha na autenticação");
+        errorDetails.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDetails);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", java.time.Instant.now());
+        errorDetails.put("status", HttpStatus.FORBIDDEN.value());
+        errorDetails.put("error", "Usuário não autorizado");
+        errorDetails.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDetails);
     }
 }

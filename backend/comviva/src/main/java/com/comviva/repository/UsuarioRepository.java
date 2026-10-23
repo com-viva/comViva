@@ -13,6 +13,8 @@ import com.comviva.domain.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<List<Usuario>> findByNome(String nome);
+
+    Optional<Usuario> findByEmail(String email);
     
     Boolean existsByEmail(String email);
 
