@@ -11,6 +11,7 @@ import com.comviva.dto.EventoResponseDTO;
 import com.comviva.enums.StatusEvento;
 import com.comviva.exception.ResourceNotFoundException;
 import com.comviva.mapper.EventoMapper;
+import com.comviva.projections.EventoResponseProjection;
 import com.comviva.repository.EventoRepository;
 
 @Service
@@ -28,9 +29,8 @@ public class EventoService {
         this.usuarioService = usuarioService;
     }
 
-    public List<EventoResponseDTO> findAllEventos(Long idUsuario, String nome, Long categoriaId, Long subcategoriaId) {
-        List<Evento> eventos = eventoRepository.findEventos(idUsuario, nome, categoriaId, subcategoriaId);
-        return eventoMapper.toDto(eventos);
+    public List<EventoResponseProjection> findAllEventos(Long idUsuario, String nome, Long categoriaId, Long subcategoriaId) {
+        return eventoRepository.findEventos(idUsuario, nome, categoriaId, subcategoriaId, LocalDateTime.now());
     }
 
     public EventoResponseDTO findEventoById(Long id) {

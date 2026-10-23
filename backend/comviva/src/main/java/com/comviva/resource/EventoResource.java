@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
+import com.comviva.projections.EventoResponseProjection;
 import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.EventoService;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class EventoResource {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<EventoResponseDTO>> getEventos(@AuthenticationPrincipal UsuarioPrincipal usuario, @RequestParam(required = false) String nome, @RequestParam(required = false) Long categoriaId, @RequestParam(required = false) Long subcategoriaId) {
+    public ResponseEntity<List<EventoResponseProjection>> getEventos(@AuthenticationPrincipal UsuarioPrincipal usuario, @RequestParam(required = false) String nome, @RequestParam(required = false) Long categoriaId, @RequestParam(required = false) Long subcategoriaId) {
         Long usuarioId = usuario.id();
         return ResponseEntity.ok(eventoService.findAllEventos(usuarioId, nome, categoriaId, subcategoriaId));
     }
