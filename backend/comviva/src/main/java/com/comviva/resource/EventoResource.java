@@ -57,13 +57,15 @@ public class EventoResource {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateEvento(@AuthenticationPrincipal UsuarioPrincipal usuario, @PathVariable Long id, @Valid @RequestBody EventoRequestDTO eventoRequestDTO) {
-        eventoService.updateEvento(id, eventoRequestDTO, usuario.id());
+        Long usuarioId = usuario.id();
+        eventoService.updateEvento(id, eventoRequestDTO, usuarioId);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/conclude") 
     public ResponseEntity<Void> concludeEvento(@AuthenticationPrincipal UsuarioPrincipal usuario, @PathVariable Long id) {
-        eventoService.concludeEvento(id, usuario.id());
+        Long usuarioId = usuario.id();        
+        eventoService.concludeEvento(id, usuarioId);
         return ResponseEntity.noContent().build();
     } 
 
