@@ -17,6 +17,10 @@ public class Subcategoria {
     @Column
     private String nome;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria; 
+
     @OneToMany(mappedBy = "subcategoria", fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "categoria", "subcategoria", "usuario" }, allowSetters = true)
     private Set<Evento> eventos = new HashSet<>();
@@ -35,6 +39,14 @@ public class Subcategoria {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public Set<Evento> getEventos() {
