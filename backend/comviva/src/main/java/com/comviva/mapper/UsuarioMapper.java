@@ -19,16 +19,10 @@ public interface UsuarioMapper {
     List<UsuarioResponseDTO> toDto(List<Usuario> usuarios);
 
     @Mapping(target = "senha", ignore = true)
-    Usuario toEntity(UsuarioResponseDTO usuarioDTO);
-    List<Usuario> toEntity(List<UsuarioResponseDTO> usuarioDTOs);
-
-    @Mapping(target = "senha", ignore = true) 
-    void updateUsuarioFromDto(UsuarioResponseDTO dto, @MappingTarget Usuario usuario);
-
-    @Mapping(target = "senha", ignore = true)
     @Mapping(target = "id", ignore = true) 
     @Mapping(target = "ativo", ignore = true) 
     Usuario toEntity(UsuarioRequestDTO usuarioDTO);
+    List<Usuario> toEntity(List<UsuarioRequestDTO> usuarioDTOs);
 
     @Mapping(target = "senha", ignore = true) 
     @Mapping(target = "id", ignore = true) 
