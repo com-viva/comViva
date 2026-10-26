@@ -29,7 +29,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
                e.subcategoria.id AS subcategoriaId,
                e.usuario.id AS usuarioId
         FROM Evento e
-        WHERE (:nome IS NULL OR LOWER(e.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+        WHERE (CAST(:nome AS String) IS NULL OR LOWER(e.nome) LIKE CONCAT('%', LOWER(CAST(:nome AS String)), '%'))
         AND (:categoriaId IS NULL OR e.categoria.id = :categoriaId)
         AND (:subcategoriaId IS NULL OR e.subcategoria.id = :subcategoriaId)
         AND (e.dataHora >= :agora OR (e.dataHora < :agora AND e.dataHoraFim >= :agora))
@@ -37,11 +37,11 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
         ORDER BY
             CASE WHEN EXISTS (
                 SELECT i.id FROM InteresseUsuario i
-                WHERE i.usuario.id = :usuarioId AND i.categoria.id = e.categoria.id
+                WHERE i.usuario.id = :usuarioId AND i.subcategoria.id = e.subcategoria.id
             ) THEN 0 ELSE 1 END,
             CASE WHEN EXISTS (
                 SELECT i.id FROM InteresseUsuario i
-                WHERE i.usuario.id = :usuarioId AND i.subcategoria.id = e.subcategoria.id
+                WHERE i.usuario.id = :usuarioId AND i.categoria.id = e.categoria.id
             ) THEN 0 ELSE 1 END,
             e.dataHora ASC
         """)
