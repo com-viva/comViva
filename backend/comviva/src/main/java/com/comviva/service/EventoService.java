@@ -39,7 +39,7 @@ public class EventoService {
     }
 
     public EventoResponseDTO findEventoById(Long id) {
-        Evento evento = findEventoByIdOrElseThrow(id);
+        Evento evento = findEventoOrElseThrow(id);
         return eventoMapper.toDto(evento);
     }
 
@@ -73,7 +73,7 @@ public class EventoService {
     }
 
     public void updateEvento(Long id, EventoRequestDTO eventoRequestDTO, Long usuarioId) {
-        Evento evento = findEventoByIdOrElseThrow(id);
+        Evento evento = findEventoOrElseThrow(id);
 
         authorizeUserEdit(usuarioId, evento);
 
@@ -86,7 +86,7 @@ public class EventoService {
     }
 
     public void concludeEvento(Long id, Long usuarioId) {
-        Evento evento = findEventoByIdOrElseThrow(id);
+        Evento evento = findEventoOrElseThrow(id);
 
         authorizeUserEdit(usuarioId, evento);
 
@@ -96,7 +96,7 @@ public class EventoService {
         eventoRepository.save(evento);
     }
 
-    private Evento findEventoByIdOrElseThrow(Long id) {
+    public Evento findEventoOrElseThrow(Long id) {
         return eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
     }
