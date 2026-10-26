@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import com.comviva.domain.Categoria;
 import com.comviva.domain.Evento;
+import com.comviva.domain.Subcategoria;
 import com.comviva.domain.Usuario;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
@@ -18,15 +21,17 @@ import com.comviva.repository.EventoRepository;
 public class EventoService {
 
     private EventoRepository eventoRepository;
-
     private EventoMapper eventoMapper;
-
     private UsuarioService usuarioService;
+    private CategoriaService categoriaService;
+    private SubcategoriaService subcategoriaService;
 
-    public EventoService(EventoRepository eventoRepository, EventoMapper eventoMapper, UsuarioService usuarioService) {
+    public EventoService(EventoRepository eventoRepository, EventoMapper eventoMapper, UsuarioService usuarioService, CategoriaService categoriaService, SubcategoriaService subcategoriaService) {
         this.eventoRepository = eventoRepository;
         this.eventoMapper = eventoMapper;
         this.usuarioService = usuarioService;
+        this.categoriaService = categoriaService;
+        this.subcategoriaService = subcategoriaService;
     }
 
     public List<EventoResponseProjection> findAllEventos(Long idUsuario, String nome, Long categoriaId, Long subcategoriaId) {
@@ -45,9 +50,21 @@ public class EventoService {
     }
 
     public void createEvento(EventoRequestDTO eventoRequestDTO, Long usuarioId) {
+
+        Categoria categoria = categoriaService.findCategoriaOrElseThrow(eventoRequestDTO.categoria().getId());
+
+        if (eventoRequestDTO.subcategoria() != null) {
+            Subcategoria subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(eventoRequestDTO.subcategoria().getId());
+
+            if (!subcategoria.getCategoria().getId().equals(categoria.getId())) {
+                throw new IllegalArgumentException("A subcategoria não pertence à categoria informada.");
+            }
+        }
+
         Evento evento = eventoMapper.toEntity(eventoRequestDTO);
         Usuario usuario = usuarioService.findUsuarioOrElseThrow(usuarioId);
 
+        evento.setCategoria(categoria);
         evento.setDataHoraFim(evento.getDataHora().plusHours(4));
         evento.setStatus(StatusEvento.AGENDADO);
         evento.setUsuario(usuario);
@@ -75,6 +92,8 @@ public class EventoService {
 
         evento.setStatus(StatusEvento.CONCLUIDO);
         evento.setDataHoraFim(LocalDateTime.now());
+
+        eventoRepository.save(evento);
     }
 
     private Evento findEventoByIdOrElseThrow(Long id) {
