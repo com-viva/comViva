@@ -12,6 +12,10 @@ import com.comviva.domain.Usuario;
 import com.comviva.dto.AvaliacaResponseDTO;
 import com.comviva.dto.AvaliacaoRequestDTO;
 import com.comviva.dto.InteresseUsuarioRequestDTO;
+import com.comviva.enums.StatusEvento;
+import com.comviva.enums.StatusInscricao;
+import com.comviva.exception.BusinessRuleException;
+import com.comviva.exception.ConflictException;
 import com.comviva.exception.ResourceNotFoundException;
 import com.comviva.mapper.AvaliacaoMapper;
 import com.comviva.repository.AvaliacaoRepository;
@@ -24,18 +28,20 @@ public class AvaliacaoService {
     private InteresseUsuarioService interesseUsuarioService;
     private UsuarioService usuarioService;
     private EventoService eventoService;
+    private InscricaoService inscricaoService;
 
     public AvaliacaoService(
             AvaliacaoRepository avaliacaoRepository,
             AvaliacaoMapper avaliacaoMapper,
             InteresseUsuarioService interesseUsuarioService,
-            UsuarioService usuarioService,
-            EventoService eventoService) {
+            UsuarioService usuarioService, EventoService eventoService,
+            InscricaoService inscricaoService) {
         this.avaliacaoRepository = avaliacaoRepository;
         this.avaliacaoMapper = avaliacaoMapper;
         this.interesseUsuarioService = interesseUsuarioService;
         this.usuarioService = usuarioService;
         this.eventoService = eventoService;
+        this.inscricaoService = inscricaoService;
     }
 
     public List<AvaliacaResponseDTO> findAvaliacaoByEvento(Long eventoId) {
@@ -55,6 +61,19 @@ public class AvaliacaoService {
 
         Usuario usuario = usuarioService.findUsuarioOrElseThrow(usuarioId);
         Evento evento = eventoService.findEventoOrElseThrow(eventoId);
+
+        if(!inscricaoService.checkInscricaoExists(usuarioId, eventoId, StatusInscricao.REALIZADA)){
+            throw new BusinessRuleException("Este usuário não possui inscrição neste evento");
+        }
+
+        if(evento.getStatus() != StatusEvento.CONCLUIDO) {
+            throw new BusinessRuleException("Este evento ainda não foi encerrado");
+        }
+
+        if(avaliacaoRepository.existsByUsuarioIdAndEventoId(usuarioId, eventoId)) {
+            throw new ConflictException("Este usuário já avaliou este evento");
+        }
+
         Avaliacao avaliacao = avaliacaoMapper.toEntity(avaliacaoRequestDTO);
 
         avaliacao.setUsuario(usuario);
