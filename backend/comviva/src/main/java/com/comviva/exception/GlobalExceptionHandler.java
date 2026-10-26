@@ -99,4 +99,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
+
+    @ExceptionHandler(BusinessRuleException.class)
+    public ResponseEntity<Map<String, Object>> handleBusinessRuleException(BusinessRuleException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", Instant.now());
+        errorDetails.put("status", HttpStatus.BAD_REQUEST.value());
+        errorDetails.put("error", "Requisição Inválida");
+        errorDetails.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+    }
 }
