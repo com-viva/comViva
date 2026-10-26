@@ -23,8 +23,7 @@ public class InscricaoService {
     private UsuarioService usuarioService;
     private EventoService eventoService;
 
-    public InscricaoService(InscricaoRepository inscricaoRepository, InscricaoMapper inscricaoMapper,
-            UsuarioService usuarioService, EventoService eventoService) {
+    public InscricaoService(InscricaoRepository inscricaoRepository, InscricaoMapper inscricaoMapper, UsuarioService usuarioService, EventoService eventoService) {
         this.inscricaoRepository = inscricaoRepository;
         this.inscricaoMapper = inscricaoMapper;
         this.usuarioService = usuarioService;
@@ -50,8 +49,7 @@ public class InscricaoService {
         Usuario usuario = usuarioService.findUsuarioOrElseThrow(usuarioId);
         Evento evento = eventoService.findEventoOrElseThrow(eventoId);
 
-        if (inscricaoRepository.countByEventoIdAndStatus(eventoId, StatusInscricao.REALIZADA) >= evento
-                .getCapacidadeMax()) {
+        if (inscricaoRepository.countByEventoIdAndStatus(eventoId, StatusInscricao.REALIZADA) >= evento.getCapacidadeMax()) {
             throw new BusinessRuleException("Este evento já atingiu sua capacidade máxima");
         }
 
@@ -59,7 +57,7 @@ public class InscricaoService {
             throw new BusinessRuleException("Este evento já começou");
         }
 
-        if (inscricaoRepository.existsByUsuarioIdAndEventoId(usuarioId, eventoId)) {
+        if (checkInscricaoExists(usuarioId, eventoId, StatusInscricao.REALIZADA)) {
             throw new ConflictException("Este usuário já possui uma inscrição neste evento");
         }
 
@@ -98,5 +96,9 @@ public class InscricaoService {
     private void cancelarInscricao(Inscricao inscricao) {
         inscricao.setStatus(StatusInscricao.CANCELADA);
         inscricaoRepository.save(inscricao);
+    }
+
+    public Boolean checkInscricaoExists(Long usuarioId, Long eventoId, StatusInscricao status) {
+        return inscricaoRepository.existsByUsuarioIdAndEventoIdAndStatus(usuarioId, eventoId, status);
     }
 }
