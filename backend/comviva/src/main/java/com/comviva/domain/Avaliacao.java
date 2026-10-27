@@ -21,8 +21,8 @@ public class Avaliacao {
     private Long id;
 
     @Column
-    @Min(value = 0, message = "A quantidade mínima deve ser 0")
-    @Max(value = 5, message = "A quantidade máxima deve ser 100") 
+    @Min(value = 0, message = "O valor mínimo deve ser 0") 
+    @Max(value = 5, message = "O valor máximo deve ser 5") 
     private Long avaliacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
