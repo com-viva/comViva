@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
 
 import com.comviva.domain.Evento;
 import com.comviva.domain.Inscricao;
@@ -14,20 +15,22 @@ import com.comviva.exception.BusinessRuleException;
 import com.comviva.exception.ConflictException;
 import com.comviva.exception.ResourceNotFoundException;
 import com.comviva.mapper.InscricaoMapper;
+import com.comviva.repository.EventoRepository;
 import com.comviva.repository.InscricaoRepository;
 
+@Service 
 public class InscricaoService {
 
     private InscricaoRepository inscricaoRepository;
     private InscricaoMapper inscricaoMapper;
     private UsuarioService usuarioService;
-    private EventoService eventoService;
+    private EventoRepository eventoRepository;
 
-    public InscricaoService(InscricaoRepository inscricaoRepository, InscricaoMapper inscricaoMapper, UsuarioService usuarioService, EventoService eventoService) {
+    public InscricaoService(InscricaoRepository inscricaoRepository, InscricaoMapper inscricaoMapper, UsuarioService usuarioService, EventoRepository eventoRepository) {
         this.inscricaoRepository = inscricaoRepository;
         this.inscricaoMapper = inscricaoMapper;
         this.usuarioService = usuarioService;
-        this.eventoService = eventoService;
+        this.eventoRepository = eventoRepository;
     }
 
     public List<InscricaoResponseDTO> findByUsuarioId(Long id) {
@@ -47,7 +50,8 @@ public class InscricaoService {
     public void createInscricao(Long usuarioId, Long eventoId) {
 
         Usuario usuario = usuarioService.findUsuarioOrElseThrow(usuarioId);
-        Evento evento = eventoService.findEventoOrElseThrow(eventoId);
+        Evento evento = eventoRepository.findById(eventoId)
+            .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
 
         if (inscricaoRepository.countByEventoIdAndStatus(eventoId, StatusInscricao.REALIZADA) >= evento.getCapacidadeMax()) {
             throw new BusinessRuleException("Este evento já atingiu sua capacidade máxima");

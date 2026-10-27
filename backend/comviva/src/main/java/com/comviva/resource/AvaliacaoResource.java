@@ -14,6 +14,7 @@ import com.comviva.dto.AvaliacaResponseDTO;
 import com.comviva.dto.AvaliacaoRequestDTO;
 import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.AvaliacaoService;
+import jakarta.validation.Valid;
 
 @RestController 
 @RequestMapping("/api/avaliacoes") 
@@ -38,7 +39,7 @@ public class AvaliacaoResource {
     }
 
     @PostMapping("evento/{id}")
-    public ResponseEntity<Void> saveAvaliacao(@AuthenticationPrincipal UsuarioPrincipal usuario, @PathVariable Long id, @RequestBody AvaliacaoRequestDTO avaliacaoRequestDTO) {
+    public ResponseEntity<Void> saveAvaliacao(@AuthenticationPrincipal UsuarioPrincipal usuario, @PathVariable Long id, @Valid @RequestBody AvaliacaoRequestDTO avaliacaoRequestDTO) {
         Long usuarioId = usuario.id();
         avaliacaoService.createAvaliacao(usuarioId, id, avaliacaoRequestDTO);
         return ResponseEntity.noContent().build();

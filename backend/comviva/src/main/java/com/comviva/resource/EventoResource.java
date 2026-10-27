@@ -2,15 +2,18 @@ package com.comviva.resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.comviva.dto.Atualizar;
+import com.comviva.dto.Criar;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
 import com.comviva.projections.EventoResponseProjection;
 import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.EventoService;
-import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -49,14 +52,14 @@ public class EventoResource {
     }
 
     @PostMapping("")
-    public ResponseEntity<Void> saveEvento(@AuthenticationPrincipal UsuarioPrincipal usuario, @Valid @RequestBody EventoRequestDTO eventoRequestDTO) {
+    public ResponseEntity<Void> saveEvento(@AuthenticationPrincipal UsuarioPrincipal usuario, @Validated(Criar.class) @RequestBody EventoRequestDTO eventoRequestDTO) {
         Long usuarioId = usuario.id();
         eventoService.createEvento(eventoRequestDTO, usuarioId);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateEvento(@AuthenticationPrincipal UsuarioPrincipal usuario, @PathVariable Long id, @Valid @RequestBody EventoRequestDTO eventoRequestDTO) {
+    public ResponseEntity<Void> updateEvento(@AuthenticationPrincipal UsuarioPrincipal usuario, @PathVariable Long id, @Validated(Atualizar.class) @RequestBody EventoRequestDTO eventoRequestDTO) {
         Long usuarioId = usuario.id();
         eventoService.updateEvento(id, eventoRequestDTO, usuarioId);
         return ResponseEntity.noContent().build();

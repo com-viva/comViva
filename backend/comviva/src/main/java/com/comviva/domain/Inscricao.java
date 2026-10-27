@@ -11,6 +11,7 @@ public class Inscricao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusInscricao status;
 

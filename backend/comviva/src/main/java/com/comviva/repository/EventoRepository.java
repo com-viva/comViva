@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.comviva.domain.Evento;
+import com.comviva.enums.StatusEvento;
 import com.comviva.projections.EventoResponseProjection;
 
 public interface EventoRepository extends JpaRepository<Evento, Long> {
@@ -48,4 +49,9 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     List<EventoResponseProjection> findEventos(@Param("usuarioId") Long usuarioId, @Param("nome") String nome,
             @Param("categoriaId") Long categoriaId, @Param("subcategoriaId") Long subcategoriaId,
             @Param("agora") LocalDateTime agora);
+
+    List<Evento> findByStatusAndDataHoraLessThanEqual(StatusEvento status, LocalDateTime dataHora);
+
+    List<Evento> findByStatusAndDataHoraFimLessThanEqual(StatusEvento status, LocalDateTime dataHoraFim);
+    
 }
