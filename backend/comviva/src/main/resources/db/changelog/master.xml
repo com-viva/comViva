@@ -15,5 +15,7 @@
     <include file="db/changelog/20261013165854-create-table-interesse_usuario.xml"/>
     <include file="db/changelog/20261020201916-inserir-coluna-evento.xml"/> 
     <include file="db/changelog/20261026174238-alterar-tipo-coluna.xml"/>
+    <include file="db/changelog/20261027085117-inserir-dados-categoria.xml"/>
+    <include file="db/changelog/20261027085128-inserir-dados-subcategoria.xml"/>
     
 </databaseChangeLog>

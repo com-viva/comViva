@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+
+    <changeSet id="20261027085117" author="zamba-cl">
+        <loadData file="db/data/categorias.csv" separator="," tableName="categoria" usePreparedStatements="true">
+            <column name="id" type="numeric" />
+            <column name="nome" type="string" /> 
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>

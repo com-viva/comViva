@@ -1,0 +1,45 @@
+﻿id,nome,categoria_id
+1,Clube de leitura,1
+2,Poesia e literatura,1
+3,Escrita criativa,1
+4,Contação de histórias,1
+5,Pintura e desenho,2
+6,Crochê e tricô,2
+7,Artesanato,2
+8,Fotografia,2
+9,Música e canto,2
+10,Dança de salão,3
+11,Forró,3
+12,Dança livre,3
+13,Danças tradicionais,3
+14,Caminhada,4
+15,Alongamento e mobilidade,4
+16,Yoga e tai chi,4
+17,Vôlei adaptado,4
+18,Ginástica em grupo,4
+19,Jogos de tabuleiro,5
+20,Baralho e dominó,5
+21,Xadrez,5
+22,Quiz e jogos de perguntas,5
+23,Tecnologia e celular,6
+24,Idiomas,6
+25,Palestras e rodas de conversa,6
+26,História e cultura,6
+27,Oficinas educativas,6
+28,Café entre amigos,7
+29,Encontros em grupo,7
+30,Piqueniques,7
+31,Festas e comemorações,7
+32,Cinema,8
+33,Teatro,8
+34,Museus e exposições,8
+35,Shows e apresentações,8
+36,Festivais culturais,8
+37,Passeios históricos,9
+38,Trilhas leves e natureza,9
+39,Excursões,9
+40,Visitas a pontos turísticos,9
+41,Oficinas de culinária,10
+42,Troca de receitas,10
+43,Degustações,10
+44,Cafés e encontros gastronômicos,10
