@@ -21,7 +21,7 @@ public class Avaliacao {
     private Long id;
 
     @Column
-    @Min(value = 0, message = "O valor mínimo deve ser 0") 
+    @Min(value = 1, message = "O valor mínimo deve ser 1") 
     @Max(value = 5, message = "O valor máximo deve ser 5") 
     private Long avaliacao;
 
