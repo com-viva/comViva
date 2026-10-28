@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -53,5 +54,11 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     List<Evento> findByStatusAndDataHoraLessThanEqual(StatusEvento status, LocalDateTime dataHora);
 
     List<Evento> findByStatusAndDataHoraFimLessThanEqual(StatusEvento status, LocalDateTime dataHoraFim);
-    
+
+    // CONSULTA PARA GERAÇÃO DE DESCRIÇÕES PARA IA
+    @Query("""
+        SELECT e.descricao FROM Evento e
+        ORDER BY e.id DESC
+        """) 
+    List<String> findLastDescricoes(Pageable pageable);
 }

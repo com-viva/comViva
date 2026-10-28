@@ -2,6 +2,8 @@ package com.comviva.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,8 @@ import com.comviva.domain.Subcategoria;
 import com.comviva.domain.Usuario;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
+import com.comviva.dto.GerarDescricaoRequestDTO;
+import com.comviva.dto.GerarDescricaoResponseDTO;
 import com.comviva.enums.StatusEvento;
 import com.comviva.exception.BusinessRuleException;
 import com.comviva.exception.ResourceNotFoundException;
@@ -153,5 +157,13 @@ public class EventoService {
         if (!evento.getUsuario().getId().equals(usuarioId)) {
             throw new AccessDeniedException("Você não tem permissão para editar este evento");
         }
+    }
+
+    // MÉTODO PARA GERAÇÃO DE DESCRIÇÕES PARA IA
+    public GerarDescricaoResponseDTO generateDescricao(GerarDescricaoRequestDTO gerarDescricaoRequestDTO) {
+        Categoria categoria = categoriaService.findCategoriaOrElseThrow(gerarDescricaoRequestDTO.categoria().getId());
+        Subcategoria subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(gerarDescricaoRequestDTO.subcategoria().getId());
+
+        
     }
 }

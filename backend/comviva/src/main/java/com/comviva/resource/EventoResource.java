@@ -7,9 +7,14 @@ import com.comviva.dto.Atualizar;
 import com.comviva.dto.Criar;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
+import com.comviva.dto.GerarDescricaoRequestDTO;
+import com.comviva.dto.GerarDescricaoResponseDTO;
 import com.comviva.projections.EventoResponseProjection;
 import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.EventoService;
+
+import jakarta.validation.Valid;
+
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -77,4 +82,10 @@ public class EventoResource {
         eventoService.deleteEvento(id);
         return ResponseEntity.noContent().build();
     }
+
+    // ENDPOINT PARA GERAÇÃO DE DESCRIÇÕES PARA IA
+    @PostMapping("/gerar-descricao")
+    public ResponseEntity<GerarDescricaoResponseDTO> gerarDescricao(@Valid @RequestBody GerarDescricaoRequestDTO gerarDescricaoRequestDTO) {
+        return ResponseEntity.ok(eventoService.generateDescricao(gerarDescricaoRequestDTO));
+    } 
 }
