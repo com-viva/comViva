@@ -5,10 +5,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.comviva.dto.Atualizar;
 import com.comviva.dto.Criar;
+import com.comviva.dto.DescricaoPythonResponseDTO;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
 import com.comviva.dto.GerarDescricaoRequestDTO;
-import com.comviva.dto.GerarDescricaoResponseDTO;
+import com.comviva.dto.GerarDescricaoRequestPythonDTO;
 import com.comviva.projections.EventoResponseProjection;
 import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.EventoService;
@@ -85,7 +86,7 @@ public class EventoResource {
 
     // ENDPOINT PARA GERAÇÃO DE DESCRIÇÕES PARA IA
     @PostMapping("/gerar-descricao")
-    public ResponseEntity<GerarDescricaoResponseDTO> gerarDescricao(@Valid @RequestBody GerarDescricaoRequestDTO gerarDescricaoRequestDTO) {
+    public ResponseEntity<DescricaoPythonResponseDTO> gerarDescricao(@Valid @RequestBody GerarDescricaoRequestDTO gerarDescricaoRequestDTO) {
         return ResponseEntity.ok(eventoService.generateDescricao(gerarDescricaoRequestDTO));
     } 
 }

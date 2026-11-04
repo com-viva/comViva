@@ -8,14 +8,16 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.comviva.client.PythonClient;
 import com.comviva.domain.Categoria;
 import com.comviva.domain.Evento;
 import com.comviva.domain.Subcategoria;
 import com.comviva.domain.Usuario;
+import com.comviva.dto.DescricaoPythonResponseDTO;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
 import com.comviva.dto.GerarDescricaoRequestDTO;
-import com.comviva.dto.GerarDescricaoResponseDTO;
+import com.comviva.dto.GerarDescricaoRequestPythonDTO;
 import com.comviva.enums.StatusEvento;
 import com.comviva.exception.BusinessRuleException;
 import com.comviva.exception.ResourceNotFoundException;
@@ -34,6 +36,7 @@ public class EventoService {
     private SubcategoriaService subcategoriaService;
     private InscricaoService inscricaoService;
     private DescricaoPythonMapper descricaoPythonMapper;
+    private PythonClient pythonClient;
 
     public EventoService(
             EventoRepository eventoRepository,
@@ -42,7 +45,8 @@ public class EventoService {
             CategoriaService categoriaService,
             SubcategoriaService subcategoriaService,
             InscricaoService inscricaoService,
-            DescricaoPythonMapper descricaoPythonMapper) {
+            DescricaoPythonMapper descricaoPythonMapper,
+            PythonClient pythonClient) {
         this.eventoRepository = eventoRepository;
         this.eventoMapper = eventoMapper;
         this.usuarioService = usuarioService;
@@ -50,6 +54,7 @@ public class EventoService {
         this.subcategoriaService = subcategoriaService;
         this.inscricaoService = inscricaoService;
         this.descricaoPythonMapper = descricaoPythonMapper;
+        this.pythonClient = pythonClient;
     }
 
     public List<EventoResponseProjection> findAllEventos(Long idUsuario, String nome, Long categoriaId, Long subcategoriaId) {
@@ -164,7 +169,7 @@ public class EventoService {
     }
 
     // MÉTODO PARA GERAÇÃO DE DESCRIÇÕES PARA IA
-    public GerarDescricaoResponseDTO generateDescricao(GerarDescricaoRequestDTO gerarDescricaoRequestDTO) {
+    public DescricaoPythonResponseDTO generateDescricao(GerarDescricaoRequestDTO gerarDescricaoRequestDTO) {
 
         List<String> ultimasDescricoes = eventoRepository.findLastDescricoes(PageRequest.of(0, 5));
         Categoria categoria = categoriaService.findCategoriaOrElseThrow(gerarDescricaoRequestDTO.categoriaId());
@@ -178,6 +183,8 @@ public class EventoService {
             }
         }
 
-        return descricaoPythonMapper.toDto(gerarDescricaoRequestDTO, categoria, subcategoria).withUltimasDescricoes(ultimasDescricoes);
+        GerarDescricaoRequestPythonDTO gerarDescricaoRequestPythonDTO = descricaoPythonMapper.toDto(gerarDescricaoRequestDTO, categoria, subcategoria).withUltimasDescricoes(ultimasDescricoes);
+
+        return pythonClient.gerarDescricao(gerarDescricaoRequestPythonDTO);
     }
 }
