@@ -19,6 +19,7 @@ import com.comviva.dto.GerarDescricaoResponseDTO;
 import com.comviva.enums.StatusEvento;
 import com.comviva.exception.BusinessRuleException;
 import com.comviva.exception.ResourceNotFoundException;
+import com.comviva.mapper.DescricaoPythonMapper;
 import com.comviva.mapper.EventoMapper;
 import com.comviva.projections.EventoResponseProjection;
 import com.comviva.repository.EventoRepository;
@@ -32,6 +33,7 @@ public class EventoService {
     private CategoriaService categoriaService;
     private SubcategoriaService subcategoriaService;
     private InscricaoService inscricaoService;
+    private DescricaoPythonMapper descricaoPythonMapper;
 
     public EventoService(
             EventoRepository eventoRepository,
@@ -39,13 +41,15 @@ public class EventoService {
             UsuarioService usuarioService,
             CategoriaService categoriaService,
             SubcategoriaService subcategoriaService,
-            InscricaoService inscricaoService) {
+            InscricaoService inscricaoService,
+            DescricaoPythonMapper descricaoPythonMapper) {
         this.eventoRepository = eventoRepository;
         this.eventoMapper = eventoMapper;
         this.usuarioService = usuarioService;
         this.categoriaService = categoriaService;
         this.subcategoriaService = subcategoriaService;
         this.inscricaoService = inscricaoService;
+        this.descricaoPythonMapper = descricaoPythonMapper;
     }
 
     public List<EventoResponseProjection> findAllEventos(Long idUsuario, String nome, Long categoriaId, Long subcategoriaId) {
@@ -99,7 +103,7 @@ public class EventoService {
         eventoRepository.deleteById(id);
     }
 
-    @Transactional 
+    @Transactional
     public void startEventos() {
         List<Evento> eventos = eventoRepository.findByStatusAndDataHoraLessThanEqual(StatusEvento.AGENDADO, LocalDateTime.now());
 
@@ -110,7 +114,7 @@ public class EventoService {
         eventoRepository.saveAll(eventos);
     }
 
-    @Transactional 
+    @Transactional
     public void concludeEventoByDataHoraFim() {
         List<Evento> eventos = eventoRepository.findByStatusAndDataHoraFimLessThanEqual(StatusEvento.EM_ANDAMENTO, LocalDateTime.now());
 
@@ -132,7 +136,7 @@ public class EventoService {
         eventoRepository.save(evento);
     }
 
-    @Transactional 
+    @Transactional
     public void cancelEvento(Long id, Long usuarioId) {
         Evento evento = findEventoOrElseThrow(id);
 
@@ -161,9 +165,19 @@ public class EventoService {
 
     // MÉTODO PARA GERAÇÃO DE DESCRIÇÕES PARA IA
     public GerarDescricaoResponseDTO generateDescricao(GerarDescricaoRequestDTO gerarDescricaoRequestDTO) {
-        Categoria categoria = categoriaService.findCategoriaOrElseThrow(gerarDescricaoRequestDTO.categoria().getId());
-        Subcategoria subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(gerarDescricaoRequestDTO.subcategoria().getId());
 
-        
+        List<String> ultimasDescricoes = eventoRepository.findLastDescricoes(PageRequest.of(0, 5));
+        Categoria categoria = categoriaService.findCategoriaOrElseThrow(gerarDescricaoRequestDTO.categoriaId());
+        Subcategoria subcategoria = null;
+
+        if (gerarDescricaoRequestDTO.subcategoriaId() != null) {
+            subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(gerarDescricaoRequestDTO.subcategoriaId());
+
+            if (!subcategoria.getCategoria().getId().equals(categoria.getId())) {
+                throw new IllegalArgumentException("A subcategoria não pertence à categoria informada.");
+            }
+        }
+
+        return descricaoPythonMapper.toDto(gerarDescricaoRequestDTO, categoria, subcategoria).withUltimasDescricoes(ultimasDescricoes);
     }
 }
