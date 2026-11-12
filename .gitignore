@@ -58,6 +58,12 @@ build/
 .vscode/
 
 .env
-__pycache__/
-*.pyc
+venv/
 .venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

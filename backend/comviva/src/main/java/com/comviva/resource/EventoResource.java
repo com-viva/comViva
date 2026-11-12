@@ -9,7 +9,6 @@ import com.comviva.dto.DescricaoPythonResponseDTO;
 import com.comviva.dto.EventoRequestDTO;
 import com.comviva.dto.EventoResponseDTO;
 import com.comviva.dto.GerarDescricaoRequestDTO;
-import com.comviva.dto.GerarDescricaoRequestPythonDTO;
 import com.comviva.projections.EventoResponseProjection;
 import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.EventoService;
