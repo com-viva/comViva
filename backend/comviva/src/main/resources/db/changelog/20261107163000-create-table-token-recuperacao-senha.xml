@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20261107163000" author="comviva">
+
+        <createTable tableName="token_recuperacao_senha">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="token_hash" type="varchar(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="usuario_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="data_expiracao" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="utilizado" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="token_recuperacao_senha"
+            baseColumnNames="usuario_id"
+            constraintName="fk_token_recuperacao_usuario"
+            referencedTableName="usuario"
+            referencedColumnNames="id"
+        />
+
+        <createIndex
+            tableName="token_recuperacao_senha"
+            indexName="idx_token_recuperacao_usuario">
+            <column name="usuario_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="token_recuperacao_senha"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>

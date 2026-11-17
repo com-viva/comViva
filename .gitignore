@@ -57,7 +57,11 @@ build/
 ### VS Code ###
 .vscode/
 
-.env
+# Configurações locais
+**/.env
+**/.env.*
+**/application-local.properties
+**/run-local.ps1
 venv/
 .venv/
 env/
