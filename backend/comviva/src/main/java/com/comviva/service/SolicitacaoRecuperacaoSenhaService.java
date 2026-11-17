@@ -2,14 +2,15 @@ package com.comviva.service;
 
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
-
-import com.comviva.service.EmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class SolicitacaoRecuperacaoSenhaService {
 
     private final RecuperacaoSenhaService recuperacaoSenhaService;
     private final EmailService emailService;
+    private static final Logger logger = LoggerFactory.getLogger(SolicitacaoRecuperacaoSenhaService.class);
 
     public SolicitacaoRecuperacaoSenhaService(
             RecuperacaoSenhaService recuperacaoSenhaService,
@@ -28,7 +29,7 @@ public class SolicitacaoRecuperacaoSenhaService {
         try {
             emailService.enviarRecuperacaoSenha(email, token);
         } catch (MailException ex) {
-            
+            logger.error("Erro ao enviar e-mail de recuperação de senha", ex);
         }
     }
 }
