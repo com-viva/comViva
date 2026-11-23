@@ -1,9 +1,8 @@
-
 import axios from "axios";
 import { obterToken } from "./tokenService";
 
 export const api = axios.create({
-    baseURL: "http://192.168.1.23:8080/api",
+    baseURL: "http://{SEU_IP}:8080/api",
     headers: {
         "Content-Type": "application/json",
     },
