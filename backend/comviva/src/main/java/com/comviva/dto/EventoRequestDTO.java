@@ -36,6 +36,5 @@ public record EventoRequestDTO(
     @NotNull(message = "A categoria é obrigatória", groups = Criar.class)
     Categoria categoria,
 
-    @NotNull(message = "A subcategoria é obrigatória",groups = Criar.class)
     Subcategoria subcategoria
 ) {}

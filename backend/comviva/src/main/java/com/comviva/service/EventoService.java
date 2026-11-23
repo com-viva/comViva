@@ -69,10 +69,13 @@ public class EventoService {
     }
 
     public void createEvento(EventoRequestDTO eventoRequestDTO, Long usuarioId) {
-
         Categoria categoria = categoriaService.findCategoriaOrElseThrow(eventoRequestDTO.categoria().getId());
 
-        Subcategoria subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(eventoRequestDTO.subcategoria().getId());
+        Subcategoria subcategoria = null;
+
+        if (eventoRequestDTO.subcategoria() != null) {
+            subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(eventoRequestDTO.subcategoria().getId());
+        }
 
         validarClassificacao(categoria, subcategoria);
 
@@ -98,7 +101,7 @@ public class EventoService {
                 : subcategoriaService.findSubcategoriaOrElseThrow(dto.subcategoria().getId());
 
         validarClassificacao(categoria, subcategoria);
-        
+
         eventoMapper.updateEventoFromDto(dto, evento);
         evento.setCategoria(categoria);
         evento.setSubcategoria(subcategoria);
@@ -191,12 +194,12 @@ public class EventoService {
     }
 
     private void validarClassificacao(Categoria categoria, Subcategoria subcategoria) {
-        if (categoria == null || subcategoria == null) {
-            throw new BusinessRuleException("A categoria e a subcategoria são obrigatórias.");
+        if (categoria == null) {
+            throw new IllegalArgumentException("A categoria é obrigatória.");
         }
 
-        if (!subcategoria.getCategoria().getId().equals(categoria.getId())) {
-            throw new BusinessRuleException("A subcategoria não pertence à categoria informada.");
+        if (subcategoria != null && !subcategoria.getCategoria().getId().equals(categoria.getId())) {
+            throw new IllegalArgumentException("A subcategoria não pertence à categoria informada.");
         }
     }
 
