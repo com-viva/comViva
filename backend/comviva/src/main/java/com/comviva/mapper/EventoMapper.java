@@ -31,8 +31,8 @@ public interface EventoMapper {
     @Mapping(target = "usuario", ignore = true)
     void updateEventoFromDto(EventoRequestDTO dto, @MappingTarget Evento evento);
 
-    @Mapping(target = "categoriaId", source = "categoria.id")
-    @Mapping(target = "subcategoriaId", source = "subcategoria.id")
+    @Mapping(target = "categoria", source = "categoria.nome")
+    @Mapping(target = "subcategoria", source = "subcategoria.nome")
     @Mapping(target = "usuarioId", source = "usuario.id")
     EventoResponseDTO toDto(Evento evento);
 
