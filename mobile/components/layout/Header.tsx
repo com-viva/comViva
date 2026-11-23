@@ -37,23 +37,26 @@ export function Header({
         {title}
       </Text>
 
-      <Image
-        source={logo}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+      <View style={styles.logoContainer}>
+        <Image
+          source={logo}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: 64,
+    height: 74,
     backgroundColor: Colors.background,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+    paddingBottom: 10,
 
     shadowColor: '#000',
     shadowOffset: {
@@ -65,15 +68,21 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
+  logoContainer: {
+    position: 'absolute',
+    right: 20,
+    bottom: 10,
+  },
+
   backButton: {
     width: 40,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    zIndex: 1,
   },
 
   title: {
     position: 'absolute',
+    bottom: 10,
     left: 60,
     right: 60,
     textAlign: 'center',
