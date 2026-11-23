@@ -17,8 +17,9 @@ import com.comviva.exception.ResourceNotFoundException;
 import com.comviva.mapper.InscricaoMapper;
 import com.comviva.repository.EventoRepository;
 import com.comviva.repository.InscricaoRepository;
+import com.comviva.enums.StatusEvento;
 
-@Service 
+@Service
 public class InscricaoService {
 
     private InscricaoRepository inscricaoRepository;
@@ -26,7 +27,8 @@ public class InscricaoService {
     private UsuarioService usuarioService;
     private EventoRepository eventoRepository;
 
-    public InscricaoService(InscricaoRepository inscricaoRepository, InscricaoMapper inscricaoMapper, UsuarioService usuarioService, EventoRepository eventoRepository) {
+    public InscricaoService(InscricaoRepository inscricaoRepository, InscricaoMapper inscricaoMapper,
+            UsuarioService usuarioService, EventoRepository eventoRepository) {
         this.inscricaoRepository = inscricaoRepository;
         this.inscricaoMapper = inscricaoMapper;
         this.usuarioService = usuarioService;
@@ -48,22 +50,32 @@ public class InscricaoService {
     }
 
     public void createInscricao(Long usuarioId, Long eventoId) {
-
         Usuario usuario = usuarioService.findUsuarioOrElseThrow(usuarioId);
-        Evento evento = eventoRepository.findById(eventoId)
-            .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
 
-        if (inscricaoRepository.countByEventoIdAndStatus(eventoId, StatusInscricao.REALIZADA) >= evento.getCapacidadeMax()) {
-            throw new BusinessRuleException("Este evento já atingiu sua capacidade máxima");
+        Evento evento = eventoRepository.findById(eventoId).orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado"));
+
+        if (evento.getStatus() != StatusEvento.AGENDADO) {
+            throw new BusinessRuleException(
+                    "Este evento não está disponível para inscrições.");
+        }
+
+        if (inscricaoRepository.countByEventoIdAndStatus(
+                eventoId, StatusInscricao.REALIZADA) >= evento.getCapacidadeMax()) {
+            throw new BusinessRuleException(
+                    "Este evento já atingiu sua capacidade máxima");
         }
 
         if (!evento.getDataHora().isAfter(LocalDateTime.now())) {
             throw new BusinessRuleException("Este evento já começou");
         }
 
-        if (checkInscricaoExists(usuarioId, eventoId, StatusInscricao.REALIZADA)) {
-            throw new ConflictException("Este usuário já possui uma inscrição neste evento");
+        if (checkInscricaoExists(
+                usuarioId, eventoId, StatusInscricao.REALIZADA)) {
+            throw new ConflictException(
+                    "Este usuário já possui uma inscrição neste evento");
         }
+
+        validarConflitoHorario(usuarioId, evento);
 
         Inscricao inscricao = new Inscricao();
 
@@ -105,4 +117,17 @@ public class InscricaoService {
     public Boolean checkInscricaoExists(Long usuarioId, Long eventoId, StatusInscricao status) {
         return inscricaoRepository.existsByUsuarioIdAndEventoIdAndStatus(usuarioId, eventoId, status);
     }
+
+    private void validarConflitoHorario(Long usuarioId, Evento evento) {
+        boolean possuiConflito = inscricaoRepository.existsConflitoHorario(usuarioId, StatusInscricao.REALIZADA,
+                List.of(StatusEvento.AGENDADO, StatusEvento.EM_ANDAMENTO),
+                evento.getDataHora(),
+                evento.getDataHoraFim());
+
+        if (possuiConflito) {
+            throw new ConflictException(
+                    "Você já possui inscrição em outro evento neste horário.");
+        }
+    }
+
 }
