@@ -11,9 +11,10 @@ import {
     TextInput,
     View,
 } from "react-native";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 
 import { Button } from "@/components/generic-button";
+import { Input } from '@/components/generic-input';
 import { Colors } from "@/constants/Colors";
 import { login } from "@/services/authService";
 import { salvarToken } from "@/services/tokenService";
@@ -71,32 +72,24 @@ export default function Login() {
 
                 <View style={styles.form}>
                     <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="EMAIL"
-                            placeholderTextColor="#000000"
+                        <Input
+                            label="EMAIL"
                             value={email}
                             onChangeText={setEmail}
                             keyboardType="email-address"
                             autoCapitalize="none"
                             autoCorrect={false}
                         />
-
-                        <View style={styles.inputLine} />
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="SENHA"
-                            placeholderTextColor="#000000"
+                        <Input
+                            label="SENHA"
                             value={senha}
                             onChangeText={setSenha}
                             secureTextEntry
                             autoCapitalize="none"
                         />
-
-                        <View style={styles.inputLine} />
                     </View>
                 </View>
 
@@ -107,6 +100,7 @@ export default function Login() {
                         variant="filled"
                         loading={carregando}
                     />
+                    {/* <Link href={"/redefinir-senha"} style={styles.footerText}>Esqueci minha senha</Link> */}
                 </View>
 
                 <View style={styles.footer}>
@@ -132,6 +126,7 @@ const styles = StyleSheet.create({
     },
 
     content: {
+        marginTop: 40,
         flexGrow: 1,
         paddingHorizontal: 33,
         paddingTop: 35,
@@ -142,6 +137,7 @@ const styles = StyleSheet.create({
         width: 190,
         height: 145,
         alignSelf: "center",
+        marginBottom: 30,
     },
 
     form: {
@@ -170,6 +166,7 @@ const styles = StyleSheet.create({
 
     loginButton: {
         marginTop: 60,
+        gap: 10,
     },
 
     footer: {
@@ -181,7 +178,7 @@ const styles = StyleSheet.create({
     footerText: {
         color: "#000000",
         textAlign: "center",
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: "800",
     },
 });
