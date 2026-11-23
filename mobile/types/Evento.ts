@@ -9,8 +9,8 @@ export interface Evento {
   endereco: string;
   status: StatusEvento;
   nivel: NivelEvento;
-  categoriaId: number;
-  subcategoriaId: number | null;
+  categoria: string;
+  subcategoria: string | null;
   usuarioId: number;
 }
 

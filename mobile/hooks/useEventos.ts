@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Evento } from '@/types/Evento';
 import { EventoRequest } from '@/types/EventoRequest';
-import { buscarEventos, buscarEventoPorId, buscarEventosPorUsuario, criarEvento, atualizarEvento, concluirEvento, excluirEvento } from '@/services/eventoService';
+import { buscarEventos, buscarEventoPorId, buscarEventosPorUsuario, criarEvento, atualizarEvento, concluirEvento, excluirEvento, EventoFiltros } from '@/services/eventoService';
 
 export function useEventos() {
   const [eventos, setEventos] = useState<Evento[]>([]);
@@ -10,12 +10,12 @@ export function useEventos() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const carregarEventos = useCallback(async () => {
+  const carregarEventos = useCallback(async (filtros?: EventoFiltros) => {
     try {
       setLoading(true);
       setError(null);
 
-      const dados = await buscarEventos();
+      const dados = await buscarEventos(filtros);
 
       setEventos(dados);
     } catch (err) {

@@ -2,7 +2,7 @@ import { api } from './api';
 import { Evento } from '@/types/Evento';
 import { EventoRequest } from '@/types/EventoRequest';
 
-interface EventoFiltros {
+export interface EventoFiltros {
   nome?: string;
   categoriaId?: number;
   subcategoriaId?: number;
