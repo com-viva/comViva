@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
     },
 
     outlineGradient: {
-        padding: 2,
+        paddingVertical: 1.5,
+        paddingHorizontal: 1.5,
     },
 
     outlineContent: {
@@ -70,7 +71,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: Colors.background,
-        paddingVertical: 12,
+        paddingVertical: 12.5,
+        paddingHorizontal: 20,
         borderRadius: 8,
     },
 
