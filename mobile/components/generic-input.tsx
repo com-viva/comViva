@@ -1,5 +1,18 @@
+
 import { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet, TextInput, TextInputProps, View } from 'react-native';
+import {
+  Animated,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native';
+import MaskedView from '@react-native-masked-view/masked-view';
+import type { ComponentType } from 'react';
+import type { MaskedViewProps } from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
 
@@ -7,11 +20,24 @@ interface InputProps extends Omit<TextInputProps, 'placeholder'> {
   label: string;
 }
 
-export function Input({ label, value, onFocus, onBlur, ...rest }: InputProps) {
-
+export function Input({
+  label,
+  value,
+  onFocus,
+  onBlur,
+  ...rest
+}: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
-  const animatedValue = useRef(new Animated.Value(value ? 1 : 0)).current;
+
+  const animatedValue = useRef(
+    new Animated.Value(value ? 1 : 0)
+  ).current;
+
   const isFloating = isFocused || !!value;
+
+  const inputRef = useRef<React.ElementRef<typeof TextInput>>(null);
+
+  const TypedMaskedView = MaskedView as ComponentType<MaskedViewProps>;
 
   useEffect(() => {
     Animated.timing(animatedValue, {
@@ -21,25 +47,54 @@ export function Input({ label, value, onFocus, onBlur, ...rest }: InputProps) {
     }).start();
   }, [isFloating, animatedValue]);
 
-  const translateY = animatedValue.interpolate({ inputRange: [0, 1], outputRange: [0, -15] });
-  const scale = animatedValue.interpolate({ inputRange: [0, 1], outputRange: [1, 0.8] });
+  const translateY = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -30],
+  });
+
+  const scale = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0.8],
+  });
 
   return (
     <View style={styles.container}>
-      <Animated.Text
+      <Animated.View
         pointerEvents="none"
         style={[
-          styles.label,
+          styles.labelContainer,
           {
-            transform: [ { translateY }, { scale } ],
-            color: isFloating ? Colors.primary.end : Colors.text.secondary,
+            transform: [{ translateY }, { scale }],
           },
         ]}
       >
-        {label}
-      </Animated.Text>
+        {isFloating ? (
+          <TypedMaskedView
+            maskElement={
+              <Text style={styles.label}>
+                {label}
+              </Text>
+            }
+          >
+            <LinearGradient
+              colors={[Colors.primary.start, Colors.primary.end]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Text style={[styles.label, { opacity: 0 }]}>
+                {label}
+              </Text>
+            </LinearGradient>
+          </TypedMaskedView>
+        ) : (
+          <Text style={[styles.label, styles.inactiveLabel]}>
+            {label}
+          </Text>
+        )}
+      </Animated.View>
 
       <TextInput
+        ref={inputRef}
         {...rest}
         value={value}
         onFocus={(event) => {
@@ -50,16 +105,11 @@ export function Input({ label, value, onFocus, onBlur, ...rest }: InputProps) {
           setIsFocused(false);
           onBlur?.(event);
         }}
-        style={styles.input}
-        placeholder=""
       />
 
       {isFocused ? (
         <LinearGradient
-          colors={[
-            Colors.primary.start,
-            Colors.primary.end,
-          ]}
+          colors={[Colors.primary.start, Colors.primary.end]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.activeLine}
@@ -77,12 +127,19 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
 
-  label: {
+  labelContainer: {
     position: 'absolute',
     left: 0,
-    top: 17,
-    fontSize: 16,
+    marginBottom: 3,
     zIndex: 1,
+  },
+
+  label: {
+    fontSize: 16,
+  },
+
+  inactiveLabel: {
+    color: Colors.text.secondary,
   },
 
   input: {
@@ -94,7 +151,7 @@ const styles = StyleSheet.create({
   },
 
   inactiveLine: {
-    height: 1,
+    height: 2,
     backgroundColor: Colors.border,
   },
 

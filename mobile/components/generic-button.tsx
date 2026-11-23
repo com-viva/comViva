@@ -62,15 +62,17 @@ const styles = StyleSheet.create({
     },
 
     outlineGradient: {
-        padding: 2,
+        paddingVertical: 1.5,
+        paddingHorizontal: 1.5,
     },
 
     outlineContent: {
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'transparent',
-        paddingVertical: 12,
+        backgroundColor: Colors.background,
+        paddingVertical: 12.5,
+        paddingHorizontal: 20,
         borderRadius: 8,
     },
 

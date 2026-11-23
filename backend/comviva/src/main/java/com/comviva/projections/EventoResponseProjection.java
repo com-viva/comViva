@@ -16,7 +16,7 @@ public interface EventoResponseProjection {
     String getEndereco();
     StatusEvento getStatus();
     NivelEvento getNivel();
-    Long getCategoriaId();
-    Long getSubcategoriaId();
+    String getCategoria();
+    String getSubcategoria();
     Long getUsuarioId();
 }

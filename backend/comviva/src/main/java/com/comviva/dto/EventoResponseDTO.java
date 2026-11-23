@@ -15,7 +15,7 @@ public record EventoResponseDTO(
     String endereco,
     StatusEvento status,
     NivelEvento nivel,
-    Long categoriaId,
-    Long subcategoriaId,
+    String categoria,
+    String subcategoria,
     Long usuarioId
 ) {}
