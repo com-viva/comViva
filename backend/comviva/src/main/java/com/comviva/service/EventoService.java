@@ -57,7 +57,8 @@ public class EventoService {
         this.pythonClient = pythonClient;
     }
 
-    public List<EventoResponseProjection> findAllEventos(Long idUsuario, String nome, Long categoriaId, Long subcategoriaId) {
+    public List<EventoResponseProjection> findAllEventos(Long idUsuario, String nome, Long categoriaId,
+            Long subcategoriaId) {
         return eventoRepository.findEventos(idUsuario, nome, categoriaId, subcategoriaId, LocalDateTime.now());
     }
 
@@ -97,12 +98,21 @@ public class EventoService {
         eventoRepository.save(evento);
     }
 
-    public void updateEvento(Long id, EventoRequestDTO eventoRequestDTO, Long usuarioId) {
+    public void updateEvento(Long id, EventoRequestDTO dto, Long usuarioId) {
         Evento evento = findEventoOrElseThrow(id);
-
         authorizeUserEdit(usuarioId, evento);
 
-        eventoMapper.updateEventoFromDto(eventoRequestDTO, evento);
+        Categoria categoria = dto.categoria() == null ? evento.getCategoria()
+                : categoriaService.findCategoriaOrElseThrow(dto.categoria().getId());
+
+        Subcategoria subcategoria = dto.subcategoria() == null ? evento.getSubcategoria()
+                : subcategoriaService.findSubcategoriaOrElseThrow(dto.subcategoria().getId());
+
+        validarClassificacao(categoria, subcategoria);
+
+        eventoMapper.updateEventoFromDto(dto, evento);
+        evento.setCategoria(categoria);
+        evento.setSubcategoria(subcategoria);
         eventoRepository.save(evento);
     }
 
@@ -112,9 +122,10 @@ public class EventoService {
 
     @Transactional
     public void startEventos() {
-        List<Evento> eventos = eventoRepository.findByStatusAndDataHoraLessThanEqual(StatusEvento.AGENDADO, LocalDateTime.now());
+        List<Evento> eventos = eventoRepository.findByStatusAndDataHoraLessThanEqual(StatusEvento.AGENDADO,
+                LocalDateTime.now());
 
-        for(Evento evento : eventos) {
+        for (Evento evento : eventos) {
             evento.setStatus(StatusEvento.EM_ANDAMENTO);
         }
 
@@ -123,9 +134,10 @@ public class EventoService {
 
     @Transactional
     public void concludeEventoByDataHoraFim() {
-        List<Evento> eventos = eventoRepository.findByStatusAndDataHoraFimLessThanEqual(StatusEvento.EM_ANDAMENTO, LocalDateTime.now());
+        List<Evento> eventos = eventoRepository.findByStatusAndDataHoraFimLessThanEqual(StatusEvento.EM_ANDAMENTO,
+                LocalDateTime.now());
 
-        for(Evento evento : eventos) {
+        for (Evento evento : eventos) {
             evento.setStatus(StatusEvento.CONCLUIDO);
         }
 
@@ -149,7 +161,7 @@ public class EventoService {
 
         authorizeUserEdit(usuarioId, evento);
 
-        if(evento.getStatus() != StatusEvento.AGENDADO) {
+        if (evento.getStatus() != StatusEvento.AGENDADO) {
             throw new BusinessRuleException("Você não pode cancelar um evento ja iniciado ou concluído");
         }
 
@@ -189,4 +201,15 @@ public class EventoService {
 
         return pythonClient.gerarDescricao(gerarDescricaoRequestPythonDTO);
     }
+
+    private void validarClassificacao(Categoria categoria, Subcategoria subcategoria) {
+        if (categoria == null) {
+            throw new IllegalArgumentException("A categoria é obrigatória.");
+        }
+
+        if (subcategoria != null && !subcategoria.getCategoria().getId().equals(categoria.getId())) {
+            throw new IllegalArgumentException("A subcategoria não pertence à categoria informada.");
+        }
+    }
+
 }
