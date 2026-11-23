@@ -2,9 +2,8 @@ package com.comviva.dto;
 
 import java.time.LocalDateTime;
 
-import com.comviva.domain.Categoria;
-import com.comviva.domain.Subcategoria;
 import com.comviva.enums.NivelEvento;
+
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,7 +33,7 @@ public record EventoRequestDTO(
     NivelEvento nivel,
 
     @NotNull(message = "A categoria é obrigatória", groups = Criar.class)
-    Categoria categoria,
+    Long categoriaId,
 
-    Subcategoria subcategoria
+    Long subcategoriaId
 ) {}

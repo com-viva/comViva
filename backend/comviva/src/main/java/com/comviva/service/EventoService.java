@@ -74,10 +74,11 @@ public class EventoService {
 
     public void createEvento(EventoRequestDTO eventoRequestDTO, Long usuarioId) {
 
-        Categoria categoria = categoriaService.findCategoriaOrElseThrow(eventoRequestDTO.categoria().getId());
+        Categoria categoria = categoriaService.findCategoriaOrElseThrow(eventoRequestDTO.categoriaId());
+        Subcategoria subcategoria = null;
 
-        if (eventoRequestDTO.subcategoria() != null) {
-            Subcategoria subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(eventoRequestDTO.subcategoria().getId());
+        if (eventoRequestDTO.subcategoriaId() != null) {
+            subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(eventoRequestDTO.subcategoriaId());
 
             if (!subcategoria.getCategoria().getId().equals(categoria.getId())) {
                 throw new IllegalArgumentException("A subcategoria não pertence à categoria informada.");
@@ -88,6 +89,7 @@ public class EventoService {
         Usuario usuario = usuarioService.findUsuarioOrElseThrow(usuarioId);
 
         evento.setCategoria(categoria);
+        evento.setSubcategoria(subcategoria);
         evento.setDataHoraFim(evento.getDataHora().plusHours(4));
         evento.setStatus(StatusEvento.AGENDADO);
         evento.setUsuario(usuario);

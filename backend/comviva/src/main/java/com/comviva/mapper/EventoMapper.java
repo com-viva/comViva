@@ -16,12 +16,16 @@ import com.comviva.dto.EventoResponseDTO;
 public interface EventoMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "categoria", ignore = true)
+    @Mapping(target = "subcategoria", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dataHoraFim", ignore = true)
     @Mapping(target = "usuario", ignore = true)
     Evento toEntity(EventoRequestDTO eventoDTO);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "categoria", ignore = true)
+    @Mapping(target = "subcategoria", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dataHoraFim", ignore = true)
     @Mapping(target = "usuario", ignore = true)
@@ -31,5 +35,6 @@ public interface EventoMapper {
     @Mapping(target = "subcategoriaId", source = "subcategoria.id")
     @Mapping(target = "usuarioId", source = "usuario.id")
     EventoResponseDTO toDto(Evento evento);
+
     List<EventoResponseDTO> toDto(List<Evento> evento);
 }
