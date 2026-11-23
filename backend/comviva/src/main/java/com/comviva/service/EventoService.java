@@ -102,11 +102,11 @@ public class EventoService {
         Evento evento = findEventoOrElseThrow(id);
         authorizeUserEdit(usuarioId, evento);
 
-        Categoria categoria = dto.categoria() == null ? evento.getCategoria()
-                : categoriaService.findCategoriaOrElseThrow(dto.categoria().getId());
+        Categoria categoria = dto.categoriaId() == null ? evento.getCategoria()
+                : categoriaService.findCategoriaOrElseThrow(dto.categoriaId());
 
-        Subcategoria subcategoria = dto.subcategoria() == null ? evento.getSubcategoria()
-                : subcategoriaService.findSubcategoriaOrElseThrow(dto.subcategoria().getId());
+        Subcategoria subcategoria = dto.subcategoriaId() == null ? evento.getSubcategoria()
+                : subcategoriaService.findSubcategoriaOrElseThrow(dto.subcategoriaId());
 
         validarClassificacao(categoria, subcategoria);
 
@@ -197,7 +197,8 @@ public class EventoService {
             }
         }
 
-        GerarDescricaoRequestPythonDTO gerarDescricaoRequestPythonDTO = descricaoPythonMapper.toDto(gerarDescricaoRequestDTO, categoria, subcategoria).withUltimasDescricoes(ultimasDescricoes);
+        GerarDescricaoRequestPythonDTO gerarDescricaoRequestPythonDTO = descricaoPythonMapper
+                .toDto(gerarDescricaoRequestDTO, categoria, subcategoria).withUltimasDescricoes(ultimasDescricoes);
 
         return pythonClient.gerarDescricao(gerarDescricaoRequestPythonDTO);
     }
