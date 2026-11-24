@@ -1,8 +1,7 @@
 import { Button } from '@/components/generic-button';
 import { Colors } from '@/constants/Colors';
-import { buscarEventoPorId } from '@/services/eventoService';
-import { inscreverEvento } from '@/services/inscricaoService';
-import { Evento } from '@/types/Evento';
+import { useEventos } from '@/hooks/useEventos';
+import { useInscricoes } from '@/hooks/useInscricoes';
 import { Entypo } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -17,39 +16,59 @@ import { ActivityIndicator, Alert, RefreshControl, ScrollView, StyleSheet, Text,
 
 export default function EventoDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
-
-    const [evento, setEvento] = useState<Evento | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { evento, loading, buscarPorId } = useEventos();
+    const { criarInscricao, buscarPorUsuario, cancelar, loading: processando } = useInscricoes();
     const [refreshing, setRefreshing] = useState(false);
+    const [inscricaoId, setInscricaoId] = useState<number | null>(null);
+    const [verificandoInscricao, setVerificandoInscricao] = useState(true);
 
     const carregarEvento = useCallback(async () => {
         if (!id) return;
 
-        try {
-            const response = await buscarEventoPorId(Number(id));
-            setEvento(response);
-        } catch (error) {
-            console.error('Erro ao buscar evento:', error);
-        }
-    }, [id]);
+        await buscarPorId(Number(id));
+    }, [id, buscarPorId]);
 
     useEffect(() => {
-        const inicializar = async () => {
-            setLoading(true);
-            await carregarEvento();
-            setLoading(false);
-        };
-
-        inicializar();
+        carregarEvento();
     }, [carregarEvento]);
 
     const atualizarEvento = async () => {
-        setRefreshing(true);
-
-        await carregarEvento();
-
-        setRefreshing(false);
+        try {
+            setRefreshing(true);
+            await carregarEvento();
+        } finally {
+            setRefreshing(false);
+        }
     };
+
+    const verificarInscricao = useCallback(async () => {
+        if (!evento) return;
+
+        try {
+            setVerificandoInscricao(true);
+
+            const dados = await buscarPorUsuario();
+
+            const inscricaoAtiva = dados.find(
+                (item) =>
+                    item.eventoId === evento.id &&
+                    item.status === 'REALIZADA'
+            );
+
+            setInscricaoId(inscricaoAtiva?.id ?? null);
+
+        } catch (erro) {
+            console.error('Erro ao verificar inscrição:', erro);
+        } finally {
+            setVerificandoInscricao(false);
+        }
+    }, [evento?.id, buscarPorUsuario]);
+
+    useEffect(() => {
+        if (evento) {
+            verificarInscricao();
+        }
+    }, [evento?.id, verificarInscricao]);
 
     useEffect(() => {
         const intervalo = setInterval(() => {
@@ -58,6 +77,31 @@ export default function EventoDetailScreen() {
 
         return () => clearInterval(intervalo);
     }, [carregarEvento]);
+
+    const handleInscricao = async () => {
+        if (!evento) return;
+
+        try {
+            if (inscricaoId !== null) {
+                await cancelar(inscricaoId);
+
+                setInscricaoId(null);
+
+                Alert.alert('Sucesso', 'Inscrição cancelada!');
+            } else {
+                await criarInscricao(evento.id);
+
+                await verificarInscricao();
+
+                Alert.alert('Sucesso', 'Inscrição realizada!');
+            }
+
+            await carregarEvento();
+
+        } catch (erro) {
+            Alert.alert('Erro', 'Não foi possível processar sua inscrição.');
+        }
+    };
 
     const formatarData = (dataHora: string) => {
         const data = new Date(dataHora);
@@ -77,18 +121,6 @@ export default function EventoDetailScreen() {
     const formatarTexto = (nivel: string) => {
         return nivel.charAt(0).toUpperCase() + nivel.slice(1).toLowerCase();
     }
-
-    const handleInscricao = async () => {
-        try {
-            await inscreverEvento(Number(evento?.id));
-
-            await carregarEvento();
-
-            Alert.alert('Sucesso', 'Inscrição realizada!');
-        } catch (erro) {
-            Alert.alert('Erro', 'Não foi possível realizar a inscrição.');
-        }
-    };
 
     if (loading) {
         return (
@@ -254,11 +286,20 @@ export default function EventoDetailScreen() {
 
                 </View>
 
-                <Button
-                    title='Quero me inscrever'
-                    onPress={handleInscricao}
-                    variant='filled'
-                />
+                {!verificandoInscricao && (
+                    <Button
+                        title={
+                            processando
+                                ? 'Aguarde...'
+                                : inscricaoId !== null
+                                    ? 'Cancelar inscrição'
+                                    : 'Quero me inscrever'
+                        }
+                        onPress={handleInscricao}
+                        variant={inscricaoId !== null ? 'outline' : 'filled'}
+                        disabled={processando}
+                    />
+                )}
 
             </ScrollView>
         </View>
@@ -359,4 +400,8 @@ const styles = StyleSheet.create({
     },
 
 });
+
+function criarInscricao(arg0: number) {
+    throw new Error('Function not implemented.');
+}
 

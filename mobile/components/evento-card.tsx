@@ -21,6 +21,9 @@ interface EventoCardProps {
   categoria: string;
   subcategoria: string | null;
   onPress: () => void;
+
+  mostrarCancelarInscricao?: boolean;
+  onCancelarInscricao?: () => void;
 }
 
 export function EventoCard({
@@ -33,6 +36,8 @@ export function EventoCard({
   categoria,
   subcategoria,
   onPress,
+  mostrarCancelarInscricao = false,
+  onCancelarInscricao,
 }: EventoCardProps) {
 
   const router = useRouter();
@@ -151,11 +156,22 @@ export function EventoCard({
           </View>
         </View>
 
-        <Button
-          title="Saber mais"
-          onPress={() => handleEventoPress(id)}
-          variant="filled"
-        />
+        <View style={styles.botoes}>
+          <Button
+            title="Saber mais"
+            onPress={() => handleEventoPress(id)}
+            variant="filled"
+          />
+
+          {mostrarCancelarInscricao && (
+            <Button
+              title="Cancelar inscrição"
+              onPress={onCancelarInscricao!}
+              variant="outline"
+            />
+          )}
+        </View>
+
       </View>
     </LinearGradient>
   );
@@ -259,6 +275,10 @@ const styles = StyleSheet.create({
 
   subcategoriaTexto: {
     color: '#c2410c',
+  },
+
+  botoes: {
+    gap: 8,
   },
 
 });
