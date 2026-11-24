@@ -13,7 +13,6 @@ import com.comviva.dto.InscricaoResponseDTO;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface InscricaoMapper {
     
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "usuarioId", source = "usuario.id")
     @Mapping(target = "eventoId", source = "evento.id")
     InscricaoResponseDTO toDto(Inscricao inscricao);

@@ -37,8 +37,7 @@ public class InscricaoService {
 
     public List<InscricaoResponseDTO> findByUsuarioId(Long id) {
 
-        List<Inscricao> inscricoesUsuario = inscricaoRepository.findByUsuarioId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Nenhuma inscrição encontrada"));
+        List<Inscricao> inscricoesUsuario = inscricaoRepository.findByUsuarioIdAndEventoStatus(id, StatusEvento.AGENDADO);
         return inscricaoMapper.toDto(inscricoesUsuario);
     }
 
@@ -91,7 +90,7 @@ public class InscricaoService {
         Inscricao inscricao = findInscricaoOrElseThrow(id);
 
         if (!inscricao.getUsuario().getId().equals(usuaroId)) {
-            throw new AccessDeniedException("Você não tem permissão para excluir este interesse");
+            throw new AccessDeniedException("Você não tem permissão para cancelar essa inscrição");
         }
 
         cancelarInscricao(inscricao);
