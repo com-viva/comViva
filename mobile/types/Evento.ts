@@ -4,7 +4,7 @@ export interface Evento {
   descricao: string;
   dataHora: string;
   dataHoraFim: string;
-  capacidadeMin: number;
+  qntdInscritos: number;
   capacidadeMax: number;
   endereco: string;
   status: StatusEvento;
