@@ -59,9 +59,9 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="inscricoes-evento"
+        name="inscricoes"
         options={{
-          title: 'Minhas inscrições',
+          title: 'Inscrições',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calendar-outline" color={String(color)} size={size} />
           ),
@@ -69,7 +69,7 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="eventos-update"
+        name="evento-update"
         options={{
           title: 'Criar evento',
           tabBarIcon: ({ color, size }) => (
