@@ -9,8 +9,10 @@ import type { ComponentType } from 'react';
 import type { MaskedViewProps } from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
 interface EventoCardProps {
+  id: number;
   nome: string;
   endereco: string;
   dataHora: string;
@@ -22,6 +24,7 @@ interface EventoCardProps {
 }
 
 export function EventoCard({
+  id,
   nome,
   endereco,
   dataHora,
@@ -32,6 +35,8 @@ export function EventoCard({
   onPress,
 }: EventoCardProps) {
 
+  const router = useRouter();
+
   const data = new Date(dataHora);
 
   const dataFormatada = data.toLocaleDateString('pt-BR');
@@ -41,6 +46,7 @@ export function EventoCard({
   });
 
   const TypedMaskedView = MaskedView as ComponentType<MaskedViewProps>;
+
 
   const nivelConfig = {
     INICIANTE: {
@@ -58,6 +64,13 @@ export function EventoCard({
       cor: '#F2E8FF',
       corTexto: '#8045B5',
     },
+  };
+
+  const handleEventoPress = (eventoId: number) => {
+    router.push({
+      pathname: '/evento-detail',
+      params: { id: eventoId.toString() },
+    });
   };
 
   return (
@@ -140,7 +153,7 @@ export function EventoCard({
 
         <Button
           title="Saber mais"
-          onPress={onPress}
+          onPress={() => handleEventoPress(id)}
           variant="filled"
         />
       </View>

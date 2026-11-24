@@ -64,7 +64,24 @@ public class EventoService {
 
     public EventoResponseDTO findEventoById(Long id) {
         Evento evento = findEventoOrElseThrow(id);
-        return eventoMapper.toDto(evento);
+        EventoResponseDTO eventoResponseDTO = eventoMapper.toDto(evento);
+        Long inscritos = inscricaoService.countActiveInscricoesByEvento(id);
+
+        return new EventoResponseDTO(
+            eventoResponseDTO.id(),
+            eventoResponseDTO.nome(),
+            eventoResponseDTO.descricao(),
+            eventoResponseDTO.dataHora(),
+            eventoResponseDTO.dataHoraFim(),
+            inscritos,
+            eventoResponseDTO.capacidadeMax(),
+            eventoResponseDTO.endereco(),
+            eventoResponseDTO.status(),
+            eventoResponseDTO.nivel(),
+            eventoResponseDTO.categoria(),
+            eventoResponseDTO.subcategoria(),
+            eventoResponseDTO.usuarioId()
+        );
     }
 
     public List<EventoResponseDTO> findEventosByUsuario(Long id) {

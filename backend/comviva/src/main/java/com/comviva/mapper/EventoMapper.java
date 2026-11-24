@@ -34,6 +34,7 @@ public interface EventoMapper {
     @Mapping(target = "categoria", source = "categoria.nome")
     @Mapping(target = "subcategoria", source = "subcategoria.nome")
     @Mapping(target = "usuarioId", source = "usuario.id")
+    @Mapping(target = "qntdInscritos", ignore = true)
     EventoResponseDTO toDto(Evento evento);
 
     List<EventoResponseDTO> toDto(List<Evento> evento);

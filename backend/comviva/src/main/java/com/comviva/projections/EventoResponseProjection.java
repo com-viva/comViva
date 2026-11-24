@@ -11,7 +11,6 @@ public interface EventoResponseProjection {
     String getDescricao();
     LocalDateTime getDataHora();
     LocalDateTime getDataHoraFim();
-    Long getCapacidadeMin();
     Long getCapacidadeMax();
     String getEndereco();
     StatusEvento getStatus();
