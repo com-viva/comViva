@@ -1,27 +1,19 @@
 
-import { useState } from "react";
-import {
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
-import { Link, router } from "expo-router";
-
 import { Button } from "@/components/generic-button";
 import { Input } from '@/components/generic-input';
 import { Colors } from "@/constants/Colors";
 import { login } from "@/services/authService";
 import { salvarToken } from "@/services/tokenService";
+import { router } from "expo-router";
+import { useState } from "react";
+import { Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useAuth } from '@/contexts/AuthContext';
+import { getUsuarioLogado } from '@/services/usuarioService';
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const { setUsuario } = useAuth();
     const [carregando, setCarregando] = useState(false);
 
     async function handleLogin() {
@@ -40,16 +32,18 @@ export default function Login() {
 
             await salvarToken(resultado.token);
 
+            const usuario = await getUsuarioLogado();
+
+            setUsuario(usuario);
+
             router.replace("/(tabs)");
         } catch (erro) {
-            Alert.alert(
-                "Não foi possível entrar",
-                erro instanceof Error ? erro.message : "Tente novamente."
-            );
+            Alert.alert("Não foi possível entrar", erro instanceof Error ? erro.message : "Tente novamente.");
         } finally {
             setCarregando(false);
         }
     }
+
     function irParaCadastro() {
         router.push("/usuario-update");
     }
