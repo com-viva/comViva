@@ -104,6 +104,10 @@ public class InscricaoService {
         inscricoes.forEach(this::cancelarInscricao);
     }
 
+    public Long countActiveInscricoesByEvento(Long eventoId) {
+        return inscricaoRepository.countByEventoIdAndStatus(eventoId, StatusInscricao.REALIZADA);
+    }
+
     public Inscricao findInscricaoOrElseThrow(Long id) {
         return inscricaoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Interesse não encontrado"));

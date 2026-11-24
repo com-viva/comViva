@@ -22,7 +22,6 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
                e.descricao AS descricao,
                e.dataHora AS dataHora,
                e.dataHoraFim AS dataHoraFim,
-               e.capacidadeMin AS capacidadeMin,
                e.capacidadeMax AS capacidadeMax,
                e.endereco AS endereco,
                e.status AS status,
