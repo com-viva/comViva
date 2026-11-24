@@ -10,12 +10,12 @@ public record EventoResponseDTO(
     String descricao,
     LocalDateTime dataHora,
     LocalDateTime dataHoraFim,
-    Long capacidadeMin,
+    Long qntdInscritos,
     Long capacidadeMax,
     String endereco,
     StatusEvento status,
     NivelEvento nivel,
-    Long categoriaId,
-    Long subcategoriaId,
+    String categoria,
+    String subcategoria,
     Long usuarioId
 ) {}

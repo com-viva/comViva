@@ -64,7 +64,24 @@ public class EventoService {
 
     public EventoResponseDTO findEventoById(Long id) {
         Evento evento = findEventoOrElseThrow(id);
-        return eventoMapper.toDto(evento);
+        EventoResponseDTO eventoResponseDTO = eventoMapper.toDto(evento);
+        Long inscritos = inscricaoService.countActiveInscricoesByEvento(id);
+
+        return new EventoResponseDTO(
+            eventoResponseDTO.id(),
+            eventoResponseDTO.nome(),
+            eventoResponseDTO.descricao(),
+            eventoResponseDTO.dataHora(),
+            eventoResponseDTO.dataHoraFim(),
+            inscritos,
+            eventoResponseDTO.capacidadeMax(),
+            eventoResponseDTO.endereco(),
+            eventoResponseDTO.status(),
+            eventoResponseDTO.nivel(),
+            eventoResponseDTO.categoria(),
+            eventoResponseDTO.subcategoria(),
+            eventoResponseDTO.usuarioId()
+        );
     }
 
     public List<EventoResponseDTO> findEventosByUsuario(Long id) {
@@ -74,20 +91,23 @@ public class EventoService {
     }
 
     public void createEvento(EventoRequestDTO eventoRequestDTO, Long usuarioId) {
-        Categoria categoria = categoriaService.findCategoriaOrElseThrow(eventoRequestDTO.categoria().getId());
 
+        Categoria categoria = categoriaService.findCategoriaOrElseThrow(eventoRequestDTO.categoriaId());
         Subcategoria subcategoria = null;
 
-        if (eventoRequestDTO.subcategoria() != null) {
-            subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(eventoRequestDTO.subcategoria().getId());
-        }
+        if (eventoRequestDTO.subcategoriaId() != null) {
+            subcategoria = subcategoriaService.findSubcategoriaOrElseThrow(eventoRequestDTO.subcategoriaId());
 
-        validarClassificacao(categoria, subcategoria);
+            if (!subcategoria.getCategoria().getId().equals(categoria.getId())) {
+                throw new IllegalArgumentException("A subcategoria não pertence à categoria informada.");
+            }
+        }
 
         Evento evento = eventoMapper.toEntity(eventoRequestDTO);
         Usuario usuario = usuarioService.findUsuarioOrElseThrow(usuarioId);
 
         evento.setCategoria(categoria);
+        evento.setSubcategoria(subcategoria);
         evento.setDataHoraFim(evento.getDataHora().plusHours(4));
         evento.setStatus(StatusEvento.AGENDADO);
         evento.setUsuario(usuario);
@@ -99,11 +119,11 @@ public class EventoService {
         Evento evento = findEventoOrElseThrow(id);
         authorizeUserEdit(usuarioId, evento);
 
-        Categoria categoria = dto.categoria() == null ? evento.getCategoria()
-                : categoriaService.findCategoriaOrElseThrow(dto.categoria().getId());
+        Categoria categoria = dto.categoriaId() == null ? evento.getCategoria()
+                : categoriaService.findCategoriaOrElseThrow(dto.categoriaId());
 
-        Subcategoria subcategoria = dto.subcategoria() == null ? evento.getSubcategoria()
-                : subcategoriaService.findSubcategoriaOrElseThrow(dto.subcategoria().getId());
+        Subcategoria subcategoria = dto.subcategoriaId() == null ? evento.getSubcategoria()
+                : subcategoriaService.findSubcategoriaOrElseThrow(dto.subcategoriaId());
 
         validarClassificacao(categoria, subcategoria);
 
@@ -194,7 +214,8 @@ public class EventoService {
             }
         }
 
-        GerarDescricaoRequestPythonDTO gerarDescricaoRequestPythonDTO = descricaoPythonMapper.toDto(gerarDescricaoRequestDTO, categoria, subcategoria).withUltimasDescricoes(ultimasDescricoes);
+        GerarDescricaoRequestPythonDTO gerarDescricaoRequestPythonDTO = descricaoPythonMapper
+                .toDto(gerarDescricaoRequestDTO, categoria, subcategoria).withUltimasDescricoes(ultimasDescricoes);
 
         return pythonClient.gerarDescricao(gerarDescricaoRequestPythonDTO);
     }

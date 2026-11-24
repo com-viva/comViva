@@ -22,15 +22,15 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
                e.descricao AS descricao,
                e.dataHora AS dataHora,
                e.dataHoraFim AS dataHoraFim,
-               e.capacidadeMin AS capacidadeMin,
                e.capacidadeMax AS capacidadeMax,
                e.endereco AS endereco,
                e.status AS status,
                e.nivel AS nivel,
-               e.categoria.id AS categoriaId,
-               e.subcategoria.id AS subcategoriaId,
+               e.categoria.nome AS categoria,
+               s.nome AS subcategoria,
                e.usuario.id AS usuarioId
         FROM Evento e
+        LEFT JOIN e.subcategoria s
         WHERE (CAST(:nome AS String) IS NULL OR LOWER(e.nome) LIKE CONCAT('%', LOWER(CAST(:nome AS String)), '%'))
         AND (:categoriaId IS NULL OR e.categoria.id = :categoriaId)
         AND (:subcategoriaId IS NULL OR e.subcategoria.id = :subcategoriaId)

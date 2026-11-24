@@ -23,7 +23,7 @@ public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
               AND e.dataHora < :dataHoraFim
               AND e.dataHoraFim > :dataHora
             """)
-            
+
     boolean existsConflitoHorario(
             @Param("usuarioId") Long usuarioId,
             @Param("statusInscricao") StatusInscricao statusInscricao,
@@ -31,7 +31,7 @@ public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
             @Param("dataHora") LocalDateTime dataHora,
             @Param("dataHoraFim") LocalDateTime dataHoraFim);
 
-    Optional<List<Inscricao>> findByUsuarioId(Long id);
+    List<Inscricao> findByUsuarioIdAndEventoStatus(Long usuarioId, StatusEvento status);
 
     Optional<List<Inscricao>> findByEventoId(Long id);
 

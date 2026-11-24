@@ -3,6 +3,7 @@ package com.comviva.resource;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import com.comviva.dto.Atualizar;
 import com.comviva.dto.Criar;
 import com.comviva.dto.UsuarioRequestDTO;
 import com.comviva.dto.UsuarioResponseDTO;
+import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.UsuarioService;
 
 @RestController
@@ -41,6 +43,11 @@ public class UsuarioResource {
         UsuarioResponseDTO usuarioResponseDTO = usuarioService.findUsuarioById(id);
         return ResponseEntity.ok(usuarioResponseDTO);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioResponseDTO> getUsuarioLogado(@AuthenticationPrincipal UsuarioPrincipal usuario) {
+        return ResponseEntity.ok(usuarioService.findUsuarioById(usuario.id()));
+    } 
 
     @PostMapping("")
     public ResponseEntity<Void> saveUsuario(@Validated(Criar.class) @RequestBody UsuarioRequestDTO usuarioRequestDTO) {

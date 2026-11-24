@@ -11,12 +11,11 @@ public interface EventoResponseProjection {
     String getDescricao();
     LocalDateTime getDataHora();
     LocalDateTime getDataHoraFim();
-    Long getCapacidadeMin();
     Long getCapacidadeMax();
     String getEndereco();
     StatusEvento getStatus();
     NivelEvento getNivel();
-    Long getCategoriaId();
-    Long getSubcategoriaId();
+    String getCategoria();
+    String getSubcategoria();
     Long getUsuarioId();
 }
