@@ -1,0 +1,126 @@
+.cadastro-page {
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 20px;
+    box-sizing: border-box;
+    background: #faf8fb;
+}
+
+.cadastro-container {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.cadastro-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.cadastro-logo {
+    width: 88px;
+    height: auto;
+    object-fit: contain;
+}
+
+.cadastro-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #252044;
+}
+
+.cadastro-header p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #716c80;
+}
+
+.cadastro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cadastro-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cadastro-field label {
+    color: #39324c;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.cadastro-field input {
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #e7e1ea;
+    border-radius: 12px;
+    outline: none;
+    color: #252044;
+    font-size: 15px;
+}
+
+.cadastro-field input:focus {
+    border-color: #9748f7;
+    box-shadow: 0 0 0 3px rgba(151, 72, 247, 0.1);
+}
+
+.cadastro-button {
+    width: 100%;
+    height: 52px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(100deg, #f65570, #9748f7);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cadastro-error {
+    margin: 0;
+    color: #c62828;
+    font-size: 13px;
+    text-align: center;
+}
+
+.cadastro-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 14px;
+    color: #716c80;
+}
+
+.cadastro-footer button {
+    border: none;
+    background: transparent;
+    color: #923edc;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media (max-width: 480px) {
+    .cadastro-page {
+        align-items: flex-start;
+    }
+}
