@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="20261124220000" author="codex">
+        <sql dbms="postgresql">
+            ALTER TABLE usuario
+            ALTER COLUMN foto TYPE TEXT
+            USING CASE
+                WHEN foto IS NULL THEN NULL
+                ELSE convert_from(lo_get(foto), 'UTF8')
+            END;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

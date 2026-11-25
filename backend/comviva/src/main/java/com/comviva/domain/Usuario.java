@@ -24,8 +24,7 @@ public class Usuario {
     @Column
     private String senha;
 
-    @Lob 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String foto;
 
     @Column
