@@ -1,29 +1,3 @@
-
-.login {
-    max-width: 520px;
-    margin: 45px auto;
-}
-
-.login form {
-    margin-top: 26px;
-    display: grid;
-    gap: 11px;
-}
-
-.login label {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.login input {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #bccbbb;
-    border-radius: 9px;
-    margin-bottom: 7px;
-}
-
-
 .login-page {
     min-height: 100dvh;
     display: flex;
@@ -108,4 +82,66 @@
   color: #237a55;
   font-size: 14px;
   text-align: center;
+}
+
+.login-form .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.login-form .form-field label {
+  color: #39324c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-form .form-field input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  box-sizing: border-box;
+
+  border: 1px solid #e7e1ea;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #252044;
+
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.login-form .form-field input:focus {
+  border-color: #9748f7;
+  box-shadow: 0 0 0 3px rgba(151, 72, 247, 0.12);
+}
+
+.login-form .forgot-password {
+  align-self: flex-end;
+  width: auto;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #923edc;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.login-footer .register-button {
+  width: auto;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #923edc;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }

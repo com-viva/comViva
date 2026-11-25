@@ -1,129 +1,99 @@
-import { useEffect, useState } from 'react'
-import { detalharEvento, inscreverEvento, listarEventos, login } from '../services/api'
-import type { Evento } from '../services/api'
-import './App.css'
+import { useCallback, useState } from 'react'
 import Login from '../paginas/Login/Login'
 import Cadastro from '../paginas/Cadastro/Cadastro'
+import Eventos from '../paginas/Eventos/Eventos'
+import Inscricoes from '../paginas/Inscricoes/Inscricoes'
+import DetalhesEvento from '../paginas/DetalhesEvento/DetalhesEvento'
+import { login } from '../services/api'
+import logo from '../assets/logoComViva-sn.png'
+import './App.css'
 
-function formatarData(data: string) {
-  return new Date(data).toLocaleString('pt-BR', {
-    day: '2-digit', month: 'long', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
-  })
-}
+type Aba = 'eventos' | 'inscricoes'
+type Autenticacao = 'login' | 'cadastro'
 
-function App() {
+export default function App() {
   const [token, setToken] = useState(() => sessionStorage.getItem('comviva_token') || '')
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-  const [eventos, setEventos] = useState<Evento[]>([])
-  const [selecionado, setSelecionado] = useState<Evento | null>(null)
+  const [telaAutenticacao, setTelaAutenticacao] = useState<Autenticacao>('login')
+  const [aba, setAba] = useState<Aba>('eventos')
+  const [eventoId, setEventoId] = useState<number | null>(null)
   const [carregando, setCarregando] = useState(false)
-  const [mensagem, setMensagem] = useState('')
   const [erro, setErro] = useState('')
-  const [telaAutenticacao, setTelaAutenticacao] = useState<'login' | 'cadastro'>('login')
+  const [mensagem, setMensagem] = useState('')
 
-  useEffect(() => {
-    if (!token) return
-    let ativo = true
-    listarEventos(token)
-      .then(dados => { if (ativo) setEventos(dados) })
-      .catch(e => {
-        if (!ativo) return
-        if (e instanceof Error && e.message.includes('Sessão inválida')) {
-          sessionStorage.removeItem('comviva_token')
-          setToken('')
-          setErro('Sua sessão expirou. Faça login novamente.')
-        } else {
-          setErro(e instanceof Error ? e.message : 'Erro ao carregar eventos')
-        }
-      })
-    return () => { ativo = false }
-  }, [token])
-
- 
-async function entrar(email: string, senha: string): Promise<void> {
-  setErro('')
-  setMensagem('')
-  setCarregando(true)
-
-  try {
-    const resposta = await login(email, senha)
-
-    sessionStorage.setItem('comviva_token', resposta.token)
-    setToken(resposta.token)
-  } catch {
-    setErro('Não foi possível entrar. Verifique o e-mail e a senha.')
-  } finally {
-    setCarregando(false)
-  }
-}
-
-
-  function sair() {
+  const sair = useCallback(() => {
     sessionStorage.removeItem('comviva_token')
     setToken('')
-    setEventos([])
-    setSelecionado(null)
-    setMensagem('')
-    setErro('')
-  }
+    setEventoId(null)
+    setAba('eventos')
+    setTelaAutenticacao('login')
+  }, [])
 
-  async function abrirEvento(id: number) {
-    setErro('')
-    setMensagem('')
-    try { setSelecionado(await detalharEvento(id, token)) }
-    catch { setErro('Não foi possível consultar os detalhes do evento.') }
-  }
+  const sessaoExpirada = useCallback(() => {
+    sair()
+    setErro('Sua sessão expirou. Faça login novamente.')
+  }, [sair])
 
-  async function inscrever() {
-    if (!selecionado) return
+  async function entrar(email: string, senha: string): Promise<void> {
     setErro('')
     setMensagem('')
     setCarregando(true)
     try {
-      await inscreverEvento(selecionado.id, token)
-      setMensagem('Inscrição realizada com sucesso!')
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : 'Não foi possível realizar a inscrição.')
+      const resultado = await login(email, senha)
+      sessionStorage.setItem('comviva_token', resultado.token)
+      setToken(resultado.token)
+    } catch {
+      setErro('Não foi possível entrar. Verifique o e-mail e a senha.')
     } finally {
       setCarregando(false)
     }
   }
 
-if (!token) {
-  if (telaAutenticacao === 'cadastro') {
-    return (
-      <Cadastro
-        onVoltarLogin={() => {
-          setErro('')
-          setTelaAutenticacao('login')
-        }}
+  if (!token) {
+    if (telaAutenticacao === 'cadastro') {
+      return <Cadastro
+        onVoltarLogin={() => { setErro(''); setTelaAutenticacao('login') }}
         onCadastroSucesso={() => {
           setErro('')
           setMensagem('Conta criada com sucesso! Faça login para continuar.')
           setTelaAutenticacao('login')
         }}
       />
-    )
-  }
-
-  return (
-    <Login
+    }
+    return <Login
       onLogin={entrar}
-      onCriarConta={() => {
-        setErro('')
-        setMensagem('')
-        setTelaAutenticacao('cadastro')
-      }}
+      onCriarConta={() => { setErro(''); setMensagem(''); setTelaAutenticacao('cadastro') }}
       carregando={carregando}
       erro={erro}
       mensagem={mensagem}
     />
+  }
+
+  function selecionarAba(proxima: Aba) {
+    setEventoId(null)
+    setAba(proxima)
+  }
+
+  return (
+    <div className="cv-aplicacao">
+      <header className="cv-header">
+        <div className="cv-header__dentro">
+          <div className="cv-identidade"><img src={logo} alt="ComViva"/><span>Conexões que transformam</span></div>
+          <nav className="cv-navegacao" aria-label="Navegação principal">
+            <button type="button" className={aba === 'eventos' ? 'ativo' : ''} aria-current={aba === 'eventos' ? 'page' : undefined} onClick={() => selecionarAba('eventos')}>Início</button>
+            <button type="button" className={aba === 'inscricoes' ? 'ativo' : ''} aria-current={aba === 'inscricoes' ? 'page' : undefined} onClick={() => selecionarAba('inscricoes')}>Inscrições</button>
+          </nav>
+          <button type="button" className="cv-sair" onClick={sair}>Sair</button>
+        </div>
+      </header>
+      <main className="cv-conteudo">
+        {eventoId !== null ? <DetalhesEvento key={eventoId} token={token} id={eventoId} onVoltar={() => setEventoId(null)} onSessaoExpirada={sessaoExpirada} /> :
+          aba === 'eventos' ? <Eventos token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} /> :
+          <Inscricoes token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} />}
+      </main>
+      <nav className="cv-navegacao-mobile" aria-label="Navegação móvel">
+        <button type="button" className={aba === 'eventos' ? 'ativo' : ''} onClick={() => selecionarAba('eventos')}><span aria-hidden="true">⌂</span>Início</button>
+        <button type="button" className={aba === 'inscricoes' ? 'ativo' : ''} onClick={() => selecionarAba('inscricoes')}><span aria-hidden="true">▦</span>Inscrições</button>
+      </nav>
+    </div>
   )
 }
-
-
-}
-
-export default App
