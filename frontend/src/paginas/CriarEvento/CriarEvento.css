@@ -7,6 +7,12 @@
   box-sizing: border-box;
 }
 
+.criar-evento-erro {
+  margin: 8px 0;
+  color: #c62828;
+  font-size: 14px;
+}
+
 .criar-evento-header {
   margin-bottom: 30px;
 }

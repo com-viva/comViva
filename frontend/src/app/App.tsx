@@ -120,7 +120,7 @@ export default function App() {
       onSessaoExpirada={sessaoExpirada}
     />
   ) : (
-    <CriarEvento />
+    <CriarEvento token={token} />
   )}
 </main>
 

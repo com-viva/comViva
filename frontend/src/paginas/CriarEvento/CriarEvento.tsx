@@ -1,9 +1,20 @@
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import {
+  buscarCategorias,
+  buscarSubcategorias
+} from '../../services/eventosWeb'
+import type {
+  Categoria,
+  Subcategoria
+} from '../../services/eventosWeb'
 import './CriarEvento.css'
 
-export default function CriarEvento() {
+interface CriarEventoProps {
+  token: string
+}
+
+export default function CriarEvento({ token }: CriarEventoProps) {
   const [nome, setNome] = useState('')
   const [descricao, setDescricao] = useState('')
   const [dataHora, setDataHora] = useState('')
@@ -14,8 +25,97 @@ export default function CriarEvento() {
   const [categoriaId, setCategoriaId] = useState('')
   const [subcategoriaId, setSubcategoriaId] = useState('')
 
+  const [categorias, setCategorias] = useState<Categoria[]>([])
+  const [subcategorias, setSubcategorias] = useState<Subcategoria[]>([])
+
+  const [carregandoCategorias, setCarregandoCategorias] = useState(true)
+  const [carregandoSubcategorias, setCarregandoSubcategorias] = useState(false)
+
+  const [erroCategorias, setErroCategorias] = useState('')
+
+  useEffect(() => {
+    let ativo = true
+
+    async function carregarCategorias() {
+      setCarregandoCategorias(true)
+      setErroCategorias('')
+
+      try {
+        const dados = await buscarCategorias(token)
+
+        if (ativo) {
+          setCategorias(dados)
+        }
+      } catch (error) {
+        if (ativo) {
+          console.error('Erro ao buscar categorias:', error)
+          setErroCategorias(
+            'Não foi possível carregar as categorias.'
+          )
+        }
+      } finally {
+        if (ativo) {
+          setCarregandoCategorias(false)
+        }
+      }
+    }
+
+    carregarCategorias()
+
+    return () => {
+      ativo = false
+    }
+  }, [token])
+
+  useEffect(() => {
+    let ativo = true
+
+    setSubcategorias([])
+
+    if (!categoriaId) {
+      setCarregandoSubcategorias(false)
+      return () => {
+        ativo = false
+      }
+    }
+
+    async function carregarSubcategorias() {
+      setCarregandoSubcategorias(true)
+      setErroCategorias('')
+
+      try {
+        const dados = await buscarSubcategorias(
+          Number(categoriaId),
+          token
+        )
+
+        if (ativo) {
+          setSubcategorias(dados)
+        }
+      } catch (error) {
+        if (ativo) {
+          console.error('Erro ao buscar subcategorias:', error)
+          setErroCategorias(
+            'Não foi possível carregar as subcategorias.'
+          )
+        }
+      } finally {
+        if (ativo) {
+          setCarregandoSubcategorias(false)
+        }
+      }
+    }
+
+    carregarSubcategorias()
+
+    return () => {
+      ativo = false
+    }
+  }, [categoriaId, token])
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
   }
 
   return (
@@ -24,7 +124,9 @@ export default function CriarEvento() {
         <span className="criar-evento-destaque">
           COMPARTILHE EXPERIÊNCIAS
         </span>
+
         <h1>Criar evento</h1>
+
         <p>
           Organize uma atividade e conecte pessoas
           por meio de novas experiências.
@@ -39,6 +141,7 @@ export default function CriarEvento() {
             <label htmlFor="nomeEvento">Nome do evento</label>
             <input
               id="nomeEvento"
+              type="text"
               value={nome}
               onChange={e => setNome(e.target.value)}
               placeholder="Ex.: Oficina de pintura"
@@ -56,15 +159,16 @@ export default function CriarEvento() {
               placeholder="Conte um pouco sobre a atividade..."
               required
             />
+
             <p className="criar-evento-ajuda">
-              Posteriormente, você poderá gerar uma sugestão
-              de descrição utilizando IA.
+        
             </p>
           </div>
 
           <div className="criar-evento-grid">
             <div className="criar-evento-campo">
               <label htmlFor="categoria">Categoria</label>
+
               <select
                 id="categoria"
                 value={categoriaId}
@@ -72,9 +176,23 @@ export default function CriarEvento() {
                   setCategoriaId(e.target.value)
                   setSubcategoriaId('')
                 }}
+                disabled={carregandoCategorias}
                 required
               >
-                <option value="">Selecione uma categoria</option>
+                <option value="">
+                  {carregandoCategorias
+                    ? 'Carregando categorias...'
+                    : 'Selecione uma categoria'}
+                </option>
+
+                {categorias.map(categoria => (
+                  <option
+                    key={categoria.id}
+                    value={categoria.id}
+                  >
+                    {categoria.nome}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -82,16 +200,38 @@ export default function CriarEvento() {
               <label htmlFor="subcategoria">
                 Subcategoria (opcional)
               </label>
+
               <select
                 id="subcategoria"
                 value={subcategoriaId}
                 onChange={e => setSubcategoriaId(e.target.value)}
-                disabled={!categoriaId}
+                disabled={
+                  !categoriaId || carregandoSubcategorias
+                }
               >
-                <option value="">Sem subcategoria</option>
+                <option value="">
+                  {carregandoSubcategorias
+                    ? 'Carregando subcategorias...'
+                    : 'Sem subcategoria'}
+                </option>
+
+                {subcategorias.map(subcategoria => (
+                  <option
+                    key={subcategoria.id}
+                    value={subcategoria.id}
+                  >
+                    {subcategoria.nome}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
+
+          {erroCategorias && (
+            <p className="criar-evento-erro" role="alert">
+              {erroCategorias}
+            </p>
+          )}
         </section>
 
         <section className="criar-evento-card">
@@ -112,6 +252,7 @@ export default function CriarEvento() {
             <label htmlFor="endereco">Local do evento</label>
             <input
               id="endereco"
+              type="text"
               value={endereco}
               onChange={e => setEndereco(e.target.value)}
               placeholder="Informe o endereço da atividade"
@@ -128,6 +269,7 @@ export default function CriarEvento() {
               <label htmlFor="capacidadeMin">
                 Mínimo de participantes
               </label>
+
               <input
                 id="capacidadeMin"
                 type="number"
@@ -142,6 +284,7 @@ export default function CriarEvento() {
               <label htmlFor="capacidadeMax">
                 Máximo de participantes
               </label>
+
               <input
                 id="capacidadeMax"
                 type="number"
@@ -155,6 +298,7 @@ export default function CriarEvento() {
 
           <div className="criar-evento-campo">
             <label htmlFor="nivel">Nível da atividade</label>
+
             <select
               id="nivel"
               value={nivel}
@@ -171,9 +315,9 @@ export default function CriarEvento() {
 
         <div className="criar-evento-acoes">
           <p>
-            O formulário está em preparação.
-            A publicação será habilitada após a integração.
+            
           </p>
+
           <button type="submit" disabled>
             Publicar evento
           </button>
