@@ -18,6 +18,6 @@
     <include file="db/changelog/20261027085117-inserir-dados-categoria.xml"/>
     <include file="db/changelog/20261027085128-inserir-dados-subcategoria.xml"/>
     <include file="db/changelog/20261107163000-create-table-token-recuperacao-senha.xml"/>
-
+    <include file="db/changelog/20261124212605-aumentar-limite-caracteres.xml"/>
     
 </databaseChangeLog>
