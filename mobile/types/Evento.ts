@@ -1,3 +1,6 @@
+import { NivelEvento } from "./NivelEvento";
+import { StatusEvento } from "./StatusEvento";
+
 export interface Evento {
   id: number;
   nome: string;
@@ -5,21 +8,14 @@ export interface Evento {
   dataHora: string;
   dataHoraFim: string;
   qntdInscritos: number;
+  capacidadeMin: number;
   capacidadeMax: number;
   endereco: string;
   status: StatusEvento;
   nivel: NivelEvento;
+  categoriaId: number;
   categoria: string;
+  subcategoriaId: number;
   subcategoria: string | null;
   usuarioId: number;
 }
-
-export type StatusEvento =
-  | 'AGENDADO'
-  | 'CANCELADO'
-  | 'CONCLUIDO';
-
-export type NivelEvento =
-  | 'INICIANTE'
-  | 'INTERMEDIARIO'
-  | 'AVANCADO';

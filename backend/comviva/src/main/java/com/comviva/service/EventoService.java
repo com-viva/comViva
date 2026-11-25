@@ -74,11 +74,14 @@ public class EventoService {
             eventoResponseDTO.dataHora(),
             eventoResponseDTO.dataHoraFim(),
             inscritos,
+            eventoResponseDTO.capacidadeMin(),
             eventoResponseDTO.capacidadeMax(),
             eventoResponseDTO.endereco(),
             eventoResponseDTO.status(),
             eventoResponseDTO.nivel(),
+            eventoResponseDTO.categoriaId(),
             eventoResponseDTO.categoria(),
+            eventoResponseDTO.subcategoriaId(),
             eventoResponseDTO.subcategoria(),
             eventoResponseDTO.usuarioId()
         );

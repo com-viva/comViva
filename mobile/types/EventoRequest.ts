@@ -1,3 +1,5 @@
+import { NivelEvento } from "./NivelEvento";
+
 export interface EventoRequest {
   nome: string;
   descricao: string;
@@ -9,13 +11,3 @@ export interface EventoRequest {
   categoriaId: number;
   subcategoriaId: number | null;
 }
-
-export type StatusEvento =
-  | 'AGENDADO'
-  | 'CANCELADO'
-  | 'CONCLUIDO';
-
-export type NivelEvento =
-  | 'INICIANTE'
-  | 'INTERMEDIARIO'
-  | 'AVANCADO';

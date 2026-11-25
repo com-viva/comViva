@@ -2,16 +2,8 @@
 import { useCallback, useState } from 'react';
 import { Evento } from '@/types/Evento';
 import { EventoRequest } from '@/types/EventoRequest';
-import {
-  buscarEventos,
-  buscarEventoPorId,
-  buscarEventosPorUsuario,
-  criarEvento,
-  atualizarEvento,
-  concluirEvento,
-  excluirEvento,
-  EventoFiltros,
-} from '@/services/eventoService';
+import { buscarEventos, buscarEventoPorId, buscarEventosPorUsuario, criarEvento, atualizarEvento, concluirEvento, excluirEvento, gerarDescricao, EventoFiltros } from '@/services/eventoService';
+import { DescricaoRequest } from '@/types/DescricaoRequest';
 
 export function useEventos() {
   const [eventos, setEventos] = useState<Evento[]>([]);
@@ -100,5 +92,14 @@ export function useEventos() {
     [executar]
   );
 
-  return { eventos, evento, loading, error, carregarEventos, buscarPorId, buscarPorUsuario, criar, atualizar, concluir, excluir };
+  const gerarDesc = useCallback(
+    (dados: DescricaoRequest) => 
+      executar(
+        () => gerarDescricao(dados),
+        'Não foi possivel gerar descrição'
+      ),
+      [executar]
+  );
+
+  return { eventos, evento, loading, error, carregarEventos, buscarPorId, buscarPorUsuario, criar, atualizar, concluir, excluir, gerarDesc };
 }

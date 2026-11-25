@@ -18,6 +18,8 @@ import { Colors } from '@/constants/Colors';
 
 interface InputProps extends Omit<TextInputProps, 'placeholder'> {
   label: string;
+  multiline?: boolean;
+  onPress?: () => void;
 }
 
 export function Input({
@@ -25,9 +27,12 @@ export function Input({
   value,
   onFocus,
   onBlur,
+  multiline,
+  onPress,
   ...rest
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
+  const [inputHeight, setInputHeight] = useState(42);
 
   const animatedValue = useRef(
     new Animated.Value(value ? 1 : 0)
@@ -63,6 +68,7 @@ export function Input({
         pointerEvents="none"
         style={[
           styles.labelContainer,
+          isFloating && styles.floatingLabelContainer,
           {
             transform: [{ translateY }, { scale }],
           },
@@ -97,6 +103,18 @@ export function Input({
         ref={inputRef}
         {...rest}
         value={value}
+        onPressIn={onPress ? () => onPress() : undefined}
+        multiline={multiline}
+        textAlignVertical={multiline ? 'top' : 'center'}
+        onContentSizeChange={(event) => {
+          if (multiline) {
+            setInputHeight(Math.max(42, event.nativeEvent.contentSize.height));
+          }
+        }}
+        style={[
+          styles.input,
+          multiline && { height: inputHeight },
+        ]}
         onFocus={(event) => {
           setIsFocused(true);
           onFocus?.(event);
@@ -106,6 +124,15 @@ export function Input({
           onBlur?.(event);
         }}
       />
+
+      {onPress && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={label}
+          onPress={onPress}
+          style={styles.pressOverlay}
+        />
+      )}
 
       {isFocused ? (
         <LinearGradient
@@ -123,7 +150,7 @@ export function Input({
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    minHeight: 60,
     justifyContent: 'flex-end',
   },
 
@@ -132,6 +159,10 @@ const styles = StyleSheet.create({
     left: 0,
     marginBottom: 3,
     zIndex: 1,
+  },
+
+  floatingLabelContainer: {
+    top: 17,
   },
 
   label: {
@@ -143,20 +174,37 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    height: 42,
+    minHeight: 42,
     paddingHorizontal: 0,
     paddingVertical: 0,
     fontSize: 16,
     color: Colors.text.primary,
   },
 
+
+  multilineInput: {
+    paddingTop: 35,
+    paddingBottom: 8,
+  },
+
   inactiveLine: {
     height: 2,
     backgroundColor: Colors.border,
+    pointerEvents: 'none',
   },
 
   activeLine: {
     height: 2,
     borderRadius: 2,
+    pointerEvents: 'none',
+  },
+
+  pressOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 2,
+    zIndex: 10,
   },
 });
