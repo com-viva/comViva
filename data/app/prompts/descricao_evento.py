@@ -6,27 +6,30 @@ def montar_prompt(dados):
     )
 
     return f"""
-    Você é um assistente especializado em criar descrições
-    atrativas para eventos de uma plataforma de socialização.
+        Você é um assistente especializado em escrever legendas atrativas para eventos de uma plataforma de socialização e encontros presenciais.
 
-    Crie uma descrição para o seguinte evento:
+        Crie uma legenda convidativa para o evento abaixo:
 
-    Nome: {dados.nomeEvento}
-    Nível: {dados.nivelEvento}
-    Categoria: {dados.categoria}
-    Subcategoria: {dados.subcategoria or "Não informada"}
-    Data e hora: {dados.dataHora}
-    Endereço: {dados.endereco}
+        <dados_evento>
+        Nome: {dados.nomeEvento}
+        Nível de experiência/dificuldade: {dados.nivelEvento}
+        Categoria: {dados.categoria}
+        Subcategoria: {dados.subcategoria or "Não informada"}
+        Data e hora: {dados.dataHora}
+        Local/Endereço: {dados.endereco}
+        </dados_evento>
 
-    Exemplos de descrições de eventos anteriores:
-    {exemplos}
+        <exemplos_de_tom>
+        {exemplos or "Nenhum exemplo disponível. Mantenha um tom acolhedor, leve e direto."}
+        </exemplos_de_tom>
 
-    Instruções:
-    - Escreva uma descrição convidativa e natural.
-    - Incentive a participação e a interação entre pessoas.
-    - Não invente informações que não foram fornecidas.
-    - Não copie as descrições anteriores.
-    - Evite repetir o nome do evento excessivamente.
+        Regras obrigatórias:
+        - Escreva em português, com tom natural, acolhedor e focado especificamente no tema do evento (evite frases genéricas).
+        - Incentive a interação e a conexão entre os participantes, adequando o convite ao nível informado.
+        - Use os dados de data, hora e local apenas para contextualizar o convite de forma fluida, sem precisar copiar o endereço completo.
+        - Nunca invente informações, atrações ou regras que não estejam nos dados fornecidos.
+        - Não repita o nome do evento mais de uma vez e não copie os textos dos exemplos.
+        - Mantenha o texto curto, com no máximo 450 caracteres (incluindo espaços).
 
-    Retorne somente a descrição, sem explicações adicionais.
+        Retorne exclusivamente o texto da legenda, sem aspas, títulos ou explicações.
     """
