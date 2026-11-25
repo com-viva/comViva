@@ -7,6 +7,11 @@ export const getUsuarioLogado = async (): Promise<Usuario> => {
     return response.data;
 };
 
+export const getUsuarioById = async (id: number): Promise<Usuario> => {
+    const response = await api.get<Usuario>(`/usuarios/${id}`);
+    return response.data;
+};
+
 export const criarUsuario = async (dados: UsuarioRequest): Promise<void> => {
     await api.post('/usuarios', dados);
 };

@@ -1,22 +1,32 @@
-
 import { useEventos } from '@/hooks/useEventos';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/generic-button';
 import { Colors } from '@/constants/Colors';
 import { Evento } from '@/types/Evento';
 import { router } from 'expo-router';
 import { StatusEvento } from '@/types/StatusEvento';
+import { Input } from '@/components/generic-input';
 
 export default function MeusEventosScreen() {
-    const { eventos, loading, buscarPorUsuario, cancelar } = useEventos();
+    const { eventos, loading, buscarPorUsuario, cancelar, concluir } = useEventos();
+    const [pesquisa, setPesquisa] = useState('');
+    const [pesquisaDebounced, setPesquisaDebounced] = useState('');
 
     useFocusEffect(
         useCallback(() => {
             buscarPorUsuario().catch(() => { });
         }, [buscarPorUsuario])
     );
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setPesquisaDebounced(pesquisa.trim());
+        }, 500);
+
+        return () => clearTimeout(timeout);
+    }, [pesquisa]);
 
     function editarEvento(id: number) {
         router.push({
@@ -38,6 +48,17 @@ export default function MeusEventosScreen() {
                 },
             ]
         );
+    }
+
+    async function concluirEvento(evento: Evento) {
+        try {
+            await concluir(evento.id);
+
+            Alert.alert('Sucesso', 'Evento concluido com sucesso!');
+            await buscarPorUsuario();
+        } catch {
+            Alert.alert('Erro', 'Não foi possível concluir o evento.');
+        }
     }
 
     async function cancelarEvento(id: number) {
@@ -109,64 +130,101 @@ export default function MeusEventosScreen() {
 
     function renderEvento({ item }: { item: Evento }) {
         const agendado = item.status === 'AGENDADO';
+        const andamento = item.status === 'EM_ANDAMENTO';
 
         return (
-            <View style={[styles.card, obterEstiloCard(item.status)]}>
-                <Text style={styles.nomeEvento}>{item.nome}</Text>
+            <Pressable onPress={() => goToInscritos(item.id)}>
+                <View style={[styles.card, obterEstiloCard(item.status)]}>
+                    <Text style={styles.nomeEvento}>{item.nome}</Text>
 
-                <Text style={styles.dataEvento}>
-                    {formatarData(item.dataHora)} {formatarHora(item.dataHora)}
-                </Text>
+                    <Text style={styles.dataEvento}>
+                        {formatarData(item.dataHora)} {formatarHora(item.dataHora)}
+                    </Text>
 
-                <Text style={styles.endereco}>{item.endereco}</Text>
+                    <Text style={styles.endereco}>{item.endereco}</Text>
 
-                <View style={styles.badgeContainer}>
-                    <View
-                        style={[
-                            styles.badge,
-                            {
-                                backgroundColor: statusConfig[item.status as StatusEvento].cor,
-                                borderColor: statusConfig[item.status as StatusEvento].corTexto,
-                            },
-                        ]}
-                    >
-                        <Text
+                    <View style={styles.badgeContainer}>
+                        <View
                             style={[
-                                styles.badgeTexto,
-                                { color: statusConfig[item.status as StatusEvento].corTexto },
+                                styles.badge,
+                                {
+                                    backgroundColor: statusConfig[item.status as StatusEvento].cor,
+                                    borderColor: statusConfig[item.status as StatusEvento].corTexto,
+                                },
                             ]}
                         >
-                            {statusConfig[item.status as StatusEvento].texto}
-                        </Text>
+                            <Text
+                                style={[
+                                    styles.badgeTexto,
+                                    { color: statusConfig[item.status as StatusEvento].corTexto },
+                                ]}
+                            >
+                                {statusConfig[item.status as StatusEvento].texto}
+                            </Text>
+                        </View>
                     </View>
+
+                    {agendado && (
+                        <View style={styles.acoes}>
+                            <View style={styles.botao}>
+                                <Button
+                                    title="Editar"
+                                    variant="outline"
+                                    onPress={() => editarEvento(item.id)}
+                                />
+                            </View>
+
+                            <View style={styles.botao}>
+                                <Button
+                                    title="Cancelar"
+                                    variant="filled"
+                                    onPress={() => confirmarCancelamento(item)}
+                                />
+                            </View>
+                        </View>
+                    )}
+
+                    {andamento && (
+                        <View style={styles.acoes}>
+                            <View style={styles.botao}>
+                                <Button
+                                    title="Concluir"
+                                    variant="filled"
+                                    onPress={() => concluirEvento(item)}
+                                />
+                            </View>
+                        </View>
+                    )}
+
                 </View>
-
-                {agendado && (
-                    <View style={styles.acoes}>
-                        <View style={styles.botao}>
-                            <Button
-                                title="Editar"
-                                variant="outline"
-                                onPress={() => editarEvento(item.id)}
-                            />
-                        </View>
-
-                        <View style={styles.botao}>
-                            <Button
-                                title="Cancelar"
-                                variant="filled"
-                                onPress={() => confirmarCancelamento(item)}
-                            />
-                        </View>
-                    </View>
-                )}
-            </View>
+            </Pressable>
         );
     }
+
+    function goToInscritos(id: number) {
+        router.push({
+            pathname: '/inscritos-evento',
+            params: { id: id.toString() }
+        });
+    }
+
+    const eventosFiltrados = eventos.filter((item) =>
+        item.nome.toLowerCase().includes(pesquisaDebounced.toLowerCase())
+    );
 
     return (
         <View style={styles.container}>
             <Text style={styles.titulo}>Meus eventos</Text>
+
+            <View style={styles.filtros}>
+                <Input
+                    label="Pesquisar"
+                    value={pesquisa}
+                    onChangeText={setPesquisa}
+                    returnKeyType="search"
+                    autoCapitalize="none"
+                />
+            </View>
 
             {loading && eventos.length === 0 ? (
                 <ActivityIndicator
@@ -175,7 +233,7 @@ export default function MeusEventosScreen() {
                 />
             ) : (
                 <FlatList
-                    data={eventos}
+                    data={eventosFiltrados}
                     keyExtractor={item => String(item.id)}
                     renderItem={renderEvento}
                     contentContainerStyle={styles.lista}
@@ -186,7 +244,9 @@ export default function MeusEventosScreen() {
                     onRefresh={() => buscarPorUsuario()}
                     ListEmptyComponent={
                         <Text style={styles.mensagem}>
-                            Você ainda não criou nenhum evento.
+                            {pesquisaDebounced
+                                ? 'Nenhum evento encontrado.'
+                                : 'Você ainda não criou nenhum evento.'}
                         </Text>
                     }
                 />
@@ -209,6 +269,11 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: Colors.text.primary,
         textTransform: 'uppercase',
+    },
+
+    filtros: {
+        gap: 8,
+        marginBottom: 15,
     },
 
     lista: {
