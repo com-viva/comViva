@@ -102,3 +102,10 @@
   font-size: 14px;
   text-align: center;
 }
+
+.login-success {
+  margin: 0;
+  color: #237a55;
+  font-size: 14px;
+  text-align: center;
+}

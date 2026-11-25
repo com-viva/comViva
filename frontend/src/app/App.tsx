@@ -91,13 +91,17 @@ async function entrar(email: string, senha: string): Promise<void> {
     }
   }
 
-
 if (!token) {
   if (telaAutenticacao === 'cadastro') {
     return (
       <Cadastro
         onVoltarLogin={() => {
           setErro('')
+          setTelaAutenticacao('login')
+        }}
+        onCadastroSucesso={() => {
+          setErro('')
+          setMensagem('Conta criada com sucesso! Faça login para continuar.')
           setTelaAutenticacao('login')
         }}
       />
@@ -109,13 +113,16 @@ if (!token) {
       onLogin={entrar}
       onCriarConta={() => {
         setErro('')
+        setMensagem('')
         setTelaAutenticacao('cadastro')
       }}
       carregando={carregando}
       erro={erro}
+      mensagem={mensagem}
     />
   )
 }
+
 
 }
 

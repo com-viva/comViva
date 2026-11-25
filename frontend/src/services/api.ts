@@ -66,3 +66,44 @@ export function detalharEvento(id: number, token: string) {
 export function inscreverEvento(id: number, token: string) {
   return requisicao<void>(`/inscricoes/evento/${id}`, { method: 'POST' }, token)
 }
+
+export interface CadastroUsuario {
+  nome: string
+  email: string
+  telefone: string
+  dataNascimento: string
+  senha: string
+}
+
+export interface CadastroUsuario {
+  nome: string
+  email: string
+  telefone: string
+  dataNascimento: string
+  senha: string
+}
+
+export async function cadastrarUsuario(
+  usuario: CadastroUsuario
+): Promise<void> {
+  const response = await fetch('/api/usuarios', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(usuario)
+  })
+
+  if (!response.ok) {
+    if (response.status === 409) {
+      throw new Error('Este e-mail já está cadastrado.')
+    }
+
+    if (response.status === 400) {
+      throw new Error('Verifique os dados informados.')
+    }
+
+    throw new Error('Não foi possível realizar o cadastro.')
+  }
+}
+

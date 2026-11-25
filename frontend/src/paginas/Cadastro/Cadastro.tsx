@@ -1,14 +1,16 @@
-
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { cadastrarUsuario } from '../../services/api'
 import './Cadastro.css'
 
 interface CadastroProps {
     onVoltarLogin: () => void
+    onCadastroSucesso: () => void
 }
 
 export default function Cadastro({
-    onVoltarLogin
+    onVoltarLogin,
+    onCadastroSucesso
 }: CadastroProps) {
 
     const [nome, setNome] = useState('')
@@ -18,8 +20,10 @@ export default function Cadastro({
     const [senha, setSenha] = useState('')
     const [confirmarSenha, setConfirmarSenha] = useState('')
     const [erro, setErro] = useState('')
+    const [carregando, setCarregando] = useState(false)
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setErro('')
 
@@ -33,9 +37,29 @@ export default function Cadastro({
             return
         }
 
-        // integração com backend
-        setErro('O envio do cadastro ainda não foi implementado.')
+        setCarregando(true)
+
+        try {
+            await cadastrarUsuario({
+                nome: nome.trim(),
+                email: email.trim(),
+                telefone: telefone.trim(),
+                dataNascimento,
+                senha
+            })
+
+            onCadastroSucesso()
+        } catch (error) {
+            setErro(
+                error instanceof Error
+                    ? error.message
+                    : 'Não foi possível realizar o cadastro.'
+            )
+        } finally {
+            setCarregando(false)
+        }
     }
+
 
     return (
         <main className="cadastro-page">
@@ -142,8 +166,12 @@ export default function Cadastro({
                         </p>
                     )}
 
-                    <button type="submit" className="cadastro-button">
-                        Criar conta
+                    <button
+                        type="submit"
+                        className="cadastro-button"
+                        disabled={carregando}
+                    >
+                        {carregando ? 'Cadastrando...' : 'Criar conta'}
                     </button>
 
                 </form>

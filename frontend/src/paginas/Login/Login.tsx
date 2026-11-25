@@ -7,13 +7,15 @@ interface LoginProps {
   onCriarConta: () => void
   carregando: boolean
   erro: string
+  mensagem: string
 }
 
 export default function Login({
   onLogin,
   onCriarConta,
   carregando,
-  erro
+  erro,
+  mensagem
 }: LoginProps) {
 
   const [email, setEmail] = useState('')
@@ -79,6 +81,11 @@ export default function Login({
 
           {erro && <p role="alert" className="login-error">{erro}</p>}
 
+{mensagem && (
+  <p className="login-success" role="status">
+    {mensagem}
+  </p>
+)}
           <button
             type="submit"
             className="login-button"
