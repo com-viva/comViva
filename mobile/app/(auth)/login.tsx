@@ -8,12 +8,13 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAuth } from '@/contexts/AuthContext';
-import { getUsuarioLogado } from '@/services/usuarioService';
+import { useUsuarios } from "@/hooks/useUsuarios";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const { setUsuario } = useAuth();
+    const { carregarUsuarioLogado } = useUsuarios();
     const [carregando, setCarregando] = useState(false);
 
     async function handleLogin() {
@@ -32,7 +33,7 @@ export default function Login() {
 
             await salvarToken(resultado.token);
 
-            const usuario = await getUsuarioLogado();
+            const usuario = await carregarUsuarioLogado();
 
             setUsuario(usuario);
 

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.comviva.domain.Usuario;
 import com.comviva.dto.UsuarioRequestDTO;
 import com.comviva.dto.UsuarioResponseDTO;
+import com.comviva.dto.UsuarioUpdateDTO;
 import com.comviva.exception.ConflictException;
 import com.comviva.exception.ResourceNotFoundException;
 import com.comviva.mapper.UsuarioMapper;
@@ -54,16 +55,16 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public void updateUsuario(Long id, UsuarioRequestDTO usuarioRequestDTO) {
+    public void updateUsuario(Long id, UsuarioUpdateDTO usuarioUpdateDTO) {
         Usuario usuario = findUsuarioOrElseThrow(id);
 
-        if (usuarioRequestDTO.email() != null && !usuarioRequestDTO.email().equals(usuario.getEmail())) {
-            if (usuarioRepository.existsByEmail(usuarioRequestDTO.email())) {
+        if (usuarioUpdateDTO.email() != null && !usuarioUpdateDTO.email().equals(usuario.getEmail())) {
+            if (usuarioRepository.existsByEmail(usuarioUpdateDTO.email())) {
                 throw new ConflictException("Este email já está sendo utilizado por outro usuário.");
             }
         }
 
-        usuarioMapper.updateUsuarioFromDto(usuarioRequestDTO, usuario);
+        usuarioMapper.updateUsuarioFromDto(usuarioUpdateDTO, usuario);
         usuarioRepository.save(usuario);
     }
 

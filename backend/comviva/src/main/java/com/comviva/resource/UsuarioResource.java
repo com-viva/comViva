@@ -19,6 +19,7 @@ import com.comviva.dto.Atualizar;
 import com.comviva.dto.Criar;
 import com.comviva.dto.UsuarioRequestDTO;
 import com.comviva.dto.UsuarioResponseDTO;
+import com.comviva.dto.UsuarioUpdateDTO;
 import com.comviva.security.UsuarioPrincipal;
 import com.comviva.service.UsuarioService;
 
@@ -56,8 +57,8 @@ public class UsuarioResource {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateUsuario(@PathVariable Long id, @Validated(Atualizar.class) @RequestBody UsuarioRequestDTO usuarioRequestDTO) {
-        usuarioService.updateUsuario(id, usuarioRequestDTO);
+    public ResponseEntity<Void> updateUsuario(@PathVariable Long id, @Validated(Atualizar.class) @RequestBody UsuarioUpdateDTO usuarioUpdateDTO) {
+        usuarioService.updateUsuario(id, usuarioUpdateDTO);
         return ResponseEntity.noContent().build();
 
     }

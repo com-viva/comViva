@@ -11,6 +11,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import com.comviva.domain.Usuario;
 import com.comviva.dto.UsuarioRequestDTO;
 import com.comviva.dto.UsuarioResponseDTO;
+import com.comviva.dto.UsuarioUpdateDTO;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UsuarioMapper {
@@ -27,5 +28,5 @@ public interface UsuarioMapper {
     @Mapping(target = "senha", ignore = true) 
     @Mapping(target = "id", ignore = true) 
     @Mapping(target = "ativo", ignore = true) 
-    void updateUsuarioFromDto(UsuarioRequestDTO dto, @MappingTarget Usuario usuario);
+    void updateUsuarioFromDto(UsuarioUpdateDTO dto, @MappingTarget Usuario usuario);
 }
