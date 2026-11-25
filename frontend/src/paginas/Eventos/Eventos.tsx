@@ -22,7 +22,7 @@ export default function Eventos({ token, onDetalhes, onSessaoExpirada }: Props) 
   }, [pesquisa])
   useEffect(() => {
     let ativo = true
-    buscarCategorias(token).then(dados => { if (ativo) setCategorias(dados) }).catch(() => { /* filtro indisponível não impede a listagem */ })
+    buscarCategorias(token).then(dados => { if (ativo) setCategorias(dados) }).catch(() => { })
     return () => { ativo = false }
   }, [token])
   useEffect(() => {

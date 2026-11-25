@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { formatarData, formatarHora } from '../../componentes/EventoCard'
 import { buscarEventoPorId, buscarInscricoes, cancelarInscricao, criarInscricao } from '../../services/eventosWeb'
 import type { EventoWeb } from '../../services/eventosWeb'
+import './DetalhesEvento.css'
 
 interface Props { token: string; id: number; onVoltar: () => void; onSessaoExpirada: () => void }
 export default function DetalhesEvento({ token, id, onVoltar, onSessaoExpirada }: Props) {
