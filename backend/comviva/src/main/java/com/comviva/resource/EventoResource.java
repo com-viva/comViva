@@ -49,7 +49,7 @@ public class EventoResource {
         return ResponseEntity.ok(evento);
     }
 
-    @GetMapping("/usuario/{id}")
+    @GetMapping("/usuario")
     public ResponseEntity<List<EventoResponseDTO>> getEventosByUsuario(@AuthenticationPrincipal UsuarioPrincipal usuario) {
         Long usuarioId = usuario.id();
         List<EventoResponseDTO> eventos = eventoService.findEventosByUsuario(usuarioId);
@@ -78,8 +78,9 @@ public class EventoResource {
     } 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvento(@PathVariable Long id) {
-        eventoService.deleteEvento(id);
+    public ResponseEntity<Void> deleteEvento(@AuthenticationPrincipal UsuarioPrincipal usuario, @PathVariable Long id) {
+        Long usuarioId = usuario.id();
+        eventoService.cancelEvento(id, usuarioId);
         return ResponseEntity.noContent().build();
     }
 

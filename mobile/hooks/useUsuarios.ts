@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Usuario } from '@/types/Usuario';
 import { UsuarioRequest, UsuarioUpdateRequest } from '@/types/UsuarioRequest';
-import { getUsuarioLogado, criarUsuario, atualizarUsuario, desativarUsuario } from '@/services/usuarioService';
+import { getUsuarioLogado, criarUsuario, atualizarUsuario, desativarUsuario, getUsuarioById } from '@/services/usuarioService';
 
 export function useUsuarios() {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -35,6 +35,15 @@ export function useUsuarios() {
         [executar]
     );
 
+    const buscarPorId = useCallback(
+        (id: number) =>
+            executar(
+                () => getUsuarioById(id),
+                'Não foi possível carregar o usuário.'
+            ),
+        [executar]
+    )
+
     const criar = useCallback(
         (dados: UsuarioRequest) =>
             executar(
@@ -62,5 +71,5 @@ export function useUsuarios() {
         [executar]
     );
 
-    return { usuario, loading, error, carregarUsuarioLogado, criar, atualizar, desativar };
+    return { usuario, loading, error, carregarUsuarioLogado, buscarPorId, criar, atualizar, desativar };
 }

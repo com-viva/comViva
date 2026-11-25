@@ -1,6 +1,6 @@
 
 import { useCallback, useState } from 'react';
-import { inscreverEvento, inscricoesUsuario, cancelarInscricao as cancelarInscricaoService } from '@/services/inscricaoService';
+import { inscreverEvento, inscricoesUsuario, cancelarInscricao as cancelarInscricaoService, inscricoesEvento } from '@/services/inscricaoService';
 import { Inscricao } from '@/types/Inscricao';
 
 export function useInscricoes() {
@@ -26,7 +26,12 @@ export function useInscricoes() {
     }, []);
 
     const criarInscricao = useCallback(
-        (eventoId: number) => executar(() => inscreverEvento(eventoId), 'Não foi possível realizar a inscrição.'), [executar]
+        (eventoId: number) =>
+            executar(() =>
+                inscreverEvento(eventoId),
+                'Não foi possível realizar a inscrição.'
+            ),
+        [executar]
     );
 
     const buscarPorUsuario = useCallback(
@@ -48,5 +53,15 @@ export function useInscricoes() {
         [executar]
     );
 
-    return { inscricoes, inscricao, loading, error, criarInscricao, buscarPorUsuario, cancelar };
+    const buscarPorEvento = useCallback(
+        (eventoId: number) =>
+            executar(async () => {
+                const dados = await inscricoesEvento(eventoId);
+                setInscricoes(dados);
+                return dados;
+            }, 'Não foi possível carregar inscrições.'),
+        [executar]
+    );
+
+    return { inscricoes, inscricao, loading, error, criarInscricao, buscarPorUsuario, cancelar, buscarPorEvento };
 }
