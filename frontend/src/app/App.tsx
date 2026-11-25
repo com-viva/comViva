@@ -8,8 +8,9 @@ import { login } from '../services/api'
 import logo from '../assets/logoComViva-sn.png'
 import './App.css'
 import Home from '../paginas/Home/Home'
+import CriarEvento from '../paginas/CriarEvento/CriarEvento'
 
-type Aba = 'eventos' | 'inscricoes'
+type Aba = 'eventos' | 'inscricoes' | 'criar-evento'
 type Autenticacao = 'login' | 'cadastro'
 
 export default function App() {
@@ -82,19 +83,47 @@ export default function App() {
           <nav className="cv-navegacao" aria-label="Navegação principal">
             <button type="button" className={aba === 'eventos' ? 'ativo' : ''} aria-current={aba === 'eventos' ? 'page' : undefined} onClick={() => selecionarAba('eventos')}>Início</button>
             <button type="button" className={aba === 'inscricoes' ? 'ativo' : ''} aria-current={aba === 'inscricoes' ? 'page' : undefined} onClick={() => selecionarAba('inscricoes')}>Inscrições</button>
+            <button
+  type="button"
+  className={aba === 'criar-evento' ? 'ativo' : ''}
+  aria-current={aba === 'criar-evento' ? 'page' : undefined}
+  onClick={() => selecionarAba('criar-evento')}
+>
+  Criar evento
+</button>
           </nav>
           <button type="button" className="cv-sair" onClick={sair}>Sair</button>
         </div>
       </header>
-      <main className="cv-conteudo">
-        {eventoId !== null ? <DetalhesEvento key={eventoId} token={token} id={eventoId} onVoltar={() => setEventoId(null)} onSessaoExpirada={sessaoExpirada} /> :
-          aba === 'eventos' ? (
-            <Home>
-              <Eventos token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} />
-            </Home>
-          ) :
-            <Inscricoes token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} />}
-      </main>
+   
+<main className="cv-conteudo">
+  {eventoId !== null ? (
+    <DetalhesEvento
+      key={eventoId}
+      token={token}
+      id={eventoId}
+      onVoltar={() => setEventoId(null)}
+      onSessaoExpirada={sessaoExpirada}
+    />
+  ) : aba === 'eventos' ? (
+    <Home>
+      <Eventos
+        token={token}
+        onDetalhes={setEventoId}
+        onSessaoExpirada={sessaoExpirada}
+      />
+    </Home>
+  ) : aba === 'inscricoes' ? (
+    <Inscricoes
+      token={token}
+      onDetalhes={setEventoId}
+      onSessaoExpirada={sessaoExpirada}
+    />
+  ) : (
+    <CriarEvento />
+  )}
+</main>
+
       <nav className="cv-navegacao-mobile" aria-label="Navegação móvel">
         <button type="button" className={aba === 'eventos' ? 'ativo' : ''} onClick={() => selecionarAba('eventos')}><span aria-hidden="true">⌂</span>Início</button>
         <button type="button" className={aba === 'inscricoes' ? 'ativo' : ''} onClick={() => selecionarAba('inscricoes')}><span aria-hidden="true">▦</span>Inscrições</button>
