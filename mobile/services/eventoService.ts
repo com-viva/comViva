@@ -1,6 +1,8 @@
+import { DescricaoRequest } from '@/types/DescricaoRequest';
 import { api } from './api';
 import { Evento } from '@/types/Evento';
 import { EventoRequest } from '@/types/EventoRequest';
+import { Descricao } from '@/types/Descricao';
 
 export interface EventoFiltros {
   nome?: string;
@@ -38,3 +40,8 @@ export const concluirEvento = async (id: number): Promise<void> => {
 export const excluirEvento = async (id: number): Promise<void> => {
   await api.delete(`/eventos/${id}`);
 };
+
+export const gerarDescricao = async (dados: DescricaoRequest): Promise<Descricao> => {
+  const response = await api.post(`/eventos/gerar-descricao`, dados);
+  return response.data;
+}
