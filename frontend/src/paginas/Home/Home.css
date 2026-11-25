@@ -1,0 +1,54 @@
+/* O App.tsx já contém o cabeçalho, a navegação e o container da página. */
+.home-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.home-boas-vindas {
+  padding: 36px 40px;
+  border-radius: 24px;
+  background: linear-gradient(120deg, #fff6f7 0%, #f0e8ff 100%);
+  border: 1px solid rgba(140, 82, 255, 0.12);
+}
+
+.home-destaque {
+  margin: 0 0 12px;
+  color: #8746cb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.home-boas-vindas h1 {
+  margin: 0 0 12px;
+  color: #282239;
+  font-size: clamp(25px, 4vw, 38px);
+  line-height: 1.2;
+}
+
+.home-descricao {
+  margin: 0;
+  max-width: 580px;
+  color: #716c80;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.home-conteudo {
+  margin-top: 28px;
+}
+
+@media (max-width: 600px) {
+  .home-boas-vindas {
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .home-descricao {
+    font-size: 14px;
+  }
+
+  .home-conteudo {
+    margin-top: 24px;
+  }
+}

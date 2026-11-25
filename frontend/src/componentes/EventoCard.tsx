@@ -1,4 +1,5 @@
 import type { EventoWeb } from '../services/eventosWeb'
+import './EventoCard.css'
 
 interface Props {
   evento: EventoWeb

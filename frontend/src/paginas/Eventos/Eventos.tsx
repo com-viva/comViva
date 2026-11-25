@@ -52,7 +52,6 @@ export default function Eventos({ token, onDetalhes, onSessaoExpirada }: Props) 
 
   return (
     <section className="cv-pagina">
-      <div className="cv-cabecalho-pagina"><div><p className="cv-sobretitulo">Explore sua comunidade</p><h1>Descubra novos eventos</h1><p>Encontre atividades que combinam com você.</p></div></div>
       <div className="cv-filtros">
         <label className="cv-campo cv-campo--pesquisa">Pesquisar evento
           <input value={pesquisa} onChange={e => setPesquisa(e.target.value)} placeholder="Digite o nome de um evento" />

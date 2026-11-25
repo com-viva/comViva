@@ -7,6 +7,7 @@ import DetalhesEvento from '../paginas/DetalhesEvento/DetalhesEvento'
 import { login } from '../services/api'
 import logo from '../assets/logoComViva-sn.png'
 import './App.css'
+import Home from '../paginas/Home/Home'
 
 type Aba = 'eventos' | 'inscricoes'
 type Autenticacao = 'login' | 'cadastro'
@@ -77,7 +78,7 @@ export default function App() {
     <div className="cv-aplicacao">
       <header className="cv-header">
         <div className="cv-header__dentro">
-          <div className="cv-identidade"><img src={logo} alt="ComViva"/><span>Conexões que transformam</span></div>
+          <div className="cv-identidade"><img src={logo} alt="ComViva" /><span>Conexões que transformam</span></div>
           <nav className="cv-navegacao" aria-label="Navegação principal">
             <button type="button" className={aba === 'eventos' ? 'ativo' : ''} aria-current={aba === 'eventos' ? 'page' : undefined} onClick={() => selecionarAba('eventos')}>Início</button>
             <button type="button" className={aba === 'inscricoes' ? 'ativo' : ''} aria-current={aba === 'inscricoes' ? 'page' : undefined} onClick={() => selecionarAba('inscricoes')}>Inscrições</button>
@@ -87,8 +88,12 @@ export default function App() {
       </header>
       <main className="cv-conteudo">
         {eventoId !== null ? <DetalhesEvento key={eventoId} token={token} id={eventoId} onVoltar={() => setEventoId(null)} onSessaoExpirada={sessaoExpirada} /> :
-          aba === 'eventos' ? <Eventos token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} /> :
-          <Inscricoes token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} />}
+          aba === 'eventos' ? (
+            <Home>
+              <Eventos token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} />
+            </Home>
+          ) :
+            <Inscricoes token={token} onDetalhes={setEventoId} onSessaoExpirada={sessaoExpirada} />}
       </main>
       <nav className="cv-navegacao-mobile" aria-label="Navegação móvel">
         <button type="button" className={aba === 'eventos' ? 'ativo' : ''} onClick={() => selecionarAba('eventos')}><span aria-hidden="true">⌂</span>Início</button>
