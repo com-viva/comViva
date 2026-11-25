@@ -20,8 +20,8 @@ export const buscarEventoPorId = async (id: number): Promise<Evento> => {
   return response.data;
 };
 
-export const buscarEventosPorUsuario = async (usuarioId: number): Promise<Evento[]> => {
-  const response = await api.get<Evento[]>(`/eventos/usuario/${usuarioId}`);
+export const buscarEventosPorUsuario = async (): Promise<Evento[]> => {
+  const response = await api.get<Evento[]>('/eventos/usuario');
   return response.data;
 };
 
@@ -37,7 +37,7 @@ export const concluirEvento = async (id: number): Promise<void> => {
   await api.patch(`/eventos/${id}/conclude`);
 };
 
-export const excluirEvento = async (id: number): Promise<void> => {
+export const cancelarEvento = async (id: number): Promise<void> => {
   await api.delete(`/eventos/${id}`);
 };
 
