@@ -88,7 +88,7 @@ public class EventoService {
     }
 
     public List<EventoResponseDTO> findEventosByUsuario(Long id) {
-        List<Evento> eventos = eventoRepository.findByUsuarioId(id)
+        List<Evento> eventos = eventoRepository.findByUsuarioIdOrderByDataHoraAsc(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum evento encontrado"));
         return eventoMapper.toDto(eventos);
     }

@@ -14,7 +14,7 @@ import com.comviva.enums.StatusEvento;
 import com.comviva.projections.EventoResponseProjection;
 
 public interface EventoRepository extends JpaRepository<Evento, Long> {
-    Optional<List<Evento>> findByUsuarioId(Long id);
+    Optional<List<Evento>> findByUsuarioIdOrderByDataHoraAsc(Long id);
 
     @Query("""
         SELECT e.id AS id,

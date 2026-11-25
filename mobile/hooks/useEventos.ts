@@ -2,7 +2,7 @@
 import { useCallback, useState } from 'react';
 import { Evento } from '@/types/Evento';
 import { EventoRequest } from '@/types/EventoRequest';
-import { buscarEventos, buscarEventoPorId, buscarEventosPorUsuario, criarEvento, atualizarEvento, concluirEvento, excluirEvento, gerarDescricao, EventoFiltros } from '@/services/eventoService';
+import { buscarEventos, buscarEventoPorId, buscarEventosPorUsuario, criarEvento, atualizarEvento, concluirEvento, cancelarEvento, gerarDescricao, EventoFiltros } from '@/services/eventoService';
 import { DescricaoRequest } from '@/types/DescricaoRequest';
 
 export function useEventos() {
@@ -47,9 +47,9 @@ export function useEventos() {
   );
 
   const buscarPorUsuario = useCallback(
-    (usuarioId: number) =>
+    () =>
       executar(async () => {
-        const dados = await buscarEventosPorUsuario(usuarioId);
+        const dados = await buscarEventosPorUsuario();
         setEventos(dados);
         return dados;
       }, 'Não foi possível carregar seus eventos.'),
@@ -83,11 +83,11 @@ export function useEventos() {
     [executar]
   );
 
-  const excluir = useCallback(
+  const cancelar = useCallback(
     (id: number) =>
       executar(
-        () => excluirEvento(id),
-        'Não foi possível excluir o evento.'
+        () => cancelarEvento(id),
+        'Não foi possível cancelar o evento.'
       ),
     [executar]
   );
@@ -101,5 +101,5 @@ export function useEventos() {
       [executar]
   );
 
-  return { eventos, evento, loading, error, carregarEventos, buscarPorId, buscarPorUsuario, criar, atualizar, concluir, excluir, gerarDesc };
+  return { eventos, evento, loading, error, carregarEventos, buscarPorId, buscarPorUsuario, criar, atualizar, concluir, cancelar, gerarDesc };
 }
