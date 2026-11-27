@@ -47,7 +47,11 @@ export default function InscricoesScreen() {
                 })
             );
 
-            setEventos(eventosInscritos);
+            setEventos(
+                eventosInscritos.filter(
+                    (item) => item.evento.status === 'AGENDADO'
+                )
+            );
         } catch (err) {
             console.error('Erro ao carregar inscrições:', err);
         } finally {

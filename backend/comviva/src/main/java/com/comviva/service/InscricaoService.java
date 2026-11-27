@@ -37,7 +37,7 @@ public class InscricaoService {
 
     public List<InscricaoResponseDTO> findByUsuarioId(Long id) {
 
-        List<Inscricao> inscricoesUsuario = inscricaoRepository.findByUsuarioIdAndEventoStatus(id, StatusEvento.AGENDADO);
+        List<Inscricao> inscricoesUsuario = inscricaoRepository.findByUsuarioId(id);
         return inscricaoMapper.toDto(inscricoesUsuario);
     }
 

@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     },
 
     cardAgendado: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.secondary,
         borderColor: Colors.text.secondary,
     },
 

@@ -31,7 +31,7 @@ public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
             @Param("dataHora") LocalDateTime dataHora,
             @Param("dataHoraFim") LocalDateTime dataHoraFim);
 
-    List<Inscricao> findByUsuarioIdAndEventoStatus(Long usuarioId, StatusEvento status);
+    List<Inscricao> findByUsuarioId(Long usuarioId);
 
     Optional<List<Inscricao>> findByEventoId(Long id);
 
